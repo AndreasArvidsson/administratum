@@ -9,6 +9,7 @@ import { tempFile } from "../tempFile";
 import { touch } from "../touch";
 import { promptContinue } from "../prompt";
 import { countdown } from "../cron";
+import { grep } from "../grep";
 
 async function run() {
   //   const res = await $("ls -la");
@@ -28,7 +29,12 @@ async function run() {
   // console.log(await promptContinue());
   // await sleep(2.5)
   // after(2.5, () => console.log("after2"));
-  countdown(6, (left) => console.log(left));
+  // countdown(6, (left) => console.log(left));
+  console.log(
+    await grep(/@types/, "package.json", {
+      lineNumber: true,
+    })
+  );
 }
 
 run();
