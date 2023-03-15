@@ -26,6 +26,7 @@ export const mv = async (
     if (stats.isFile() && !options.force) {
       throw Error(`Destination file already exists: '${destination}'`);
     }
+    destination = path.join(destination, path.basename(source));
   }
 
   fs.renameSync(source, destination);

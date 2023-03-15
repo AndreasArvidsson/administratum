@@ -1,12 +1,13 @@
 import { task, workflow } from "../Administratum";
-import { sleep } from "../utils/cron";
+import { fetch } from "../utils/fetch";
+import { mkdirs } from "../utils/mkdir";
+import { mv } from "../utils/mv";
 
-workflow("tests1", () => {
-  task("task1", async () => {
-    await sleep("2s");
-  });
+const url =
+  "https://cdn.shopify.com/s/files/1/0255/8659/7968/products/JH-137.jpg";
 
-  task("task2", async () => {
-    await sleep("5s");
-  });
+workflow("Example", () => {
+  task("Download", () => fetch(url));
+  task("mkdir", () => mkdirs("stuff"));
+  task("Move", () => mv("JH-137.jpg", "stuff/"));
 });
