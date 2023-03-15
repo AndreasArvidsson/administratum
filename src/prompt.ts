@@ -10,8 +10,9 @@ export const promptContinue = async () => {
 export const promptYesNo = async (question: string) => {
   for (;;) {
     console.log(`- ${question} [Y/n]`);
-    const key = await keypress();
-    switch (key.toLowerCase()) {
+    const line = await readLine();
+
+    switch (line.toLowerCase()) {
       case "yes":
       case "y":
       case "":
@@ -25,7 +26,7 @@ export const promptYesNo = async (question: string) => {
   }
 };
 
-const keypress = () => {
+const readLine = () => {
   return new Promise<string>((resolve) => {
     process.stdin.setEncoding("utf-8");
     process.stdin.once("data", (data) => {
