@@ -1,17 +1,18 @@
 import fs from "fs";
 import path from "path";
+import { PathLike, pathString } from "./Path";
 
 interface Options {
   force?: boolean;
 }
 
 export const mv = async (
-  source: string,
-  destination: string,
+  source: PathLike,
+  destination: PathLike,
   options: Options = {}
 ) => {
-  source = path.resolve(source);
-  destination = path.resolve(destination);
+  source = pathString(source);
+  destination = pathString(destination);
 
   if (source === destination) {
     throw Error(`Can't move to self: '${source}'`);

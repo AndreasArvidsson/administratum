@@ -5,6 +5,8 @@ import { mkdirs } from "./mkdir";
 import { mv } from "./mv";
 import fs from "fs";
 
+export type PathLike = Path | string;
+
 export class Path {
   readonly path: string;
 
@@ -12,8 +14,8 @@ export class Path {
     return new Path(os.homedir());
   }
 
-  constructor(path: string) {
-    this.path = pathlib.resolve(path);
+  constructor(path: PathLike) {
+    this.path = pathString(path);
   }
 
   get name(): string {
@@ -45,16 +47,12 @@ export class Path {
       .globSync(pattern, { cwd: this.path })
       .map((f) => new Path(pathlib.join(this.path, f)));
   }
-
-  mkdirs() {
-    return mkdirs(this.path);
-  }
-
-  move(path: Path) {
-    return mv(this.path, path.path);
-  }
 }
 
 export const getCtime = (path: Path) => {
   return fs.statSync(path.path).ctime;
+};
+
+export const pathString = (path: PathLike) => {
+  return path instanceof Path ? path.path : pathlib.resolve(path);
 };
