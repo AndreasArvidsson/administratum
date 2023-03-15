@@ -12,6 +12,7 @@ import { countdown } from "../cron";
 import { grep } from "../grep";
 import { ls } from "../ls";
 import { find, findStr } from "../find";
+import { cp } from "../cp";
 
 async function run() {
   //   const res = await $("ls -la");
@@ -38,7 +39,8 @@ async function run() {
   //   })
   // );
   // console.log(await ls(".", { all: true, long: true }));
-  console.log(await findStr("src", { name: /t/ }));
+  // console.log(await findStr("src", { name: /t/ }));
+  // console.log(await cp("src", "b", { recursive: true, force: true }));
 }
 
 run();

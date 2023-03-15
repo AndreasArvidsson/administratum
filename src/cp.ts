@@ -2,10 +2,11 @@ import fs from "fs";
 import path from "path";
 
 interface Options {
+  recursive?: boolean;
   force?: boolean;
 }
 
-export const mv = async (
+export const cp = async (
   source: string,
   destination: string,
   options: Options = {}
@@ -14,21 +15,25 @@ export const mv = async (
   destination = path.resolve(destination);
 
   if (source === destination) {
-    throw Error(`Can't move to self: '${source}'`);
+    throw Error(`Can't copy to self: '${source}'`);
   }
 
   if (!fs.existsSync(source)) {
     throw Error(`No such file or directory: '${source}'`);
   }
 
-  if (fs.existsSync(destination)) {
-    const stats = fs.statSync(destination);
-    if (stats.isFile() && !options.force) {
-      throw Error(`Destination file already exists: '${destination}'`);
+  const stats = fs.statSync(source);
+  if (stats.isDirectory()) {
+    if (!options.recursive) {
+      throw Error(`Source is a directory: '${source}'`);
     }
   }
 
-  fs.renameSync(source, destination);
+  fs.cpSync(source, destination, {
+    errorOnExist: true,
+    recursive: true,
+    force: options.force ?? false,
+  });
 
   return destination;
 };

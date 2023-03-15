@@ -23,31 +23,31 @@ export const extract = async (
   destination?: string,
   options: Options = {}
 ) => {
-  const src = path.resolve(source);
-  const dest = path.resolve(destination ?? path.parse(source).name);
-  const ext = path.parse(source).ext;
+  source = path.resolve(source);
+  destination = path.resolve(destination ?? path.basename(source));
+  const ext = path.extname(source);
 
-  if (!fs.existsSync(src)) {
-    throw Error(`No such file: '${src}'`);
+  if (!fs.existsSync(source)) {
+    throw Error(`No such file: '${source}'`);
   }
 
-  if (fs.existsSync(dest)) {
-    const stats = fs.statSync(dest);
+  if (fs.existsSync(destination)) {
+    const stats = fs.statSync(destination);
     if (stats.isFile() && !options.force) {
-      throw Error(`Destination file already exists: '${dest}'`);
+      throw Error(`Destination file already exists: '${destination}'`);
     }
   }
 
   switch (ext) {
     case ".zip":
-      await unzip(src, dest);
+      await unzip(source, destination);
       break;
     case ".tar":
-      await untar(src, dest);
+      await untar(source, destination);
       break;
     default:
       throw new Error(`Unknown archive '${ext}'`);
   }
 
-  return dest;
+  return destination;
 };

@@ -15,7 +15,7 @@ export const rm = async (path: string, options: Options = {}) => {
   const stats = fs.statSync(src);
   if (stats.isDirectory()) {
     if (!options.recursive) {
-      throw Error(`Path is directory: '${src}'`);
+      throw Error(`Path is a directory: '${src}'`);
     }
   }
 
