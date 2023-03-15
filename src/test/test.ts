@@ -11,6 +11,7 @@ import { promptContinue } from "../prompt";
 import { countdown } from "../cron";
 import { grep } from "../grep";
 import { ls } from "../ls";
+import { find, findStr } from "../find";
 
 async function run() {
   //   const res = await $("ls -la");
@@ -36,7 +37,8 @@ async function run() {
   //     lineNumber: true,
   //   })
   // );
-  console.log(await ls(".", { all: true, long: true }));
+  // console.log(await ls(".", { all: true, long: true }));
+  console.log(await findStr("src", { name: /t/ }));
 }
 
 run();
