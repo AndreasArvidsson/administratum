@@ -4,13 +4,14 @@
     "version": "0.0.1",
     "publisher": "AndreasArvidsson",
     "license": "MIT",
-    "main": "./src/runWorkFlows.ts",
+    "main": "./src/index.ts",
     "repository": {
         "type": "git",
         "url": "https://github.com/AndreasArvidsson/administratum"
     },
     "scripts": {
-        "start": "ts-node .",
+        "start": "ts-node test/runWorkflows.ts",
+        "examples": "ts-node test/examples.ts",
         "build": "tsc -p ./",
         "lint": "eslint . --ext .ts,.tsx",
         "watch": "tsc -watch -p ./"

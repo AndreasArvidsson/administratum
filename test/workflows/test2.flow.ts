@@ -1,5 +1,4 @@
-import { task, workflow } from "../Administratum";
-import { sleep } from "../utils/cron";
+import { sleep, task, workflow } from "../..";
 
 workflow("tests2", () => {
   task("task2", async () => {

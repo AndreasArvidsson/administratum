@@ -1,8 +1,8 @@
 import { globSync } from "glob";
 import path from "path";
-import { Administratum } from "./Administratum";
+import { Administratum } from "..";
 
-async function run() {
+(async () => {
   const cwd = path.join(__dirname, "workflows");
 
   const files = globSync("**/**.flow.ts", { cwd })
@@ -12,6 +12,4 @@ async function run() {
   const administratum = new Administratum({ files });
 
   await administratum.run();
-}
-
-run();
+})();
