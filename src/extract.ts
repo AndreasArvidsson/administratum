@@ -1,14 +1,21 @@
 import path from "path";
 import fs from "fs";
-import admZip from "adm-zip";
+import extractZip from "extract-zip";
+import tar from "tar";
 
 interface Options {
   force?: boolean;
 }
 
 function unzip(source: string, destination: string) {
-  const zip = new admZip(source);
-  zip.extractAllTo(destination, true);
+  return extractZip(source, { dir: destination });
+}
+
+function untar(source: string, destination: string) {
+  return tar.extract({
+    file: source,
+    cwd: destination,
+  });
 }
 
 export const extract = async (
@@ -33,7 +40,10 @@ export const extract = async (
 
   switch (ext) {
     case ".zip":
-      unzip(src, dest);
+      await unzip(src, dest);
+      break;
+    case ".tar":
+      await untar(src, dest);
       break;
     default:
       throw new Error(`Unknown archive '${ext}'`);
