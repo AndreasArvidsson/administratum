@@ -16,20 +16,20 @@ export class Path {
     this.path = pathlib.resolve(path);
   }
 
+  get name(): string {
+    return pathlib.basename(this.path);
+  }
+
+  get ext(): string {
+    return pathlib.extname(this.path);
+  }
+
   join(...sub: string[]): Path {
     return new Path(pathlib.join(this.path, ...sub));
   }
 
   dir(): Path {
     return new Path(pathlib.dirname(this.path));
-  }
-
-  name(): string {
-    return pathlib.basename(this.path);
-  }
-
-  ext(): string {
-    return pathlib.extname(this.path);
   }
 
   to(path: string): Path {
@@ -50,7 +50,7 @@ export class Path {
     return mkdirs(this.path);
   }
 
-  rename(path: Path) {
+  move(path: Path) {
     return mv(this.path, path.path);
   }
 }
