@@ -13,6 +13,7 @@ export * from "./mv";
 export * from "./Path";
 export * from "./progress";
 export * from "./prompt";
+export * from "./readFile";
 export * from "./rm";
 export * from "./shell";
 export * from "./tempFile";
