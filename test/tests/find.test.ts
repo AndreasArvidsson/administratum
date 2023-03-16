@@ -16,6 +16,7 @@ describe("find", () => {
   });
 
   it("findStr()", () => {
+    process.chdir(path.join(__dirname, "..", ".."));
     const res = findStr(fixtureDir);
     const expected = [
       ["test", dir].join(path.sep),

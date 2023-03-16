@@ -22,10 +22,13 @@ export const mv = (
   }
 
   if (destination.exists()) {
-    if (destination.isFile() && !options.force) {
-      throw Error(`Destination file already exists: '${destination}'`);
+    if (destination.isFile()) {
+      if (!options.force) {
+        throw Error(`Destination file already exists: '${destination}'`);
+      }
+    } else {
+      destination = destination.join(source.name);
     }
-    destination = destination.join(source.name);
   }
 
   fs.renameSync(source.path, destination.path);

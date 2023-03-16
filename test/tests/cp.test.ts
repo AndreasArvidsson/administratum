@@ -6,18 +6,18 @@ import { v4 as uuidv4 } from "uuid";
 import { cp } from "../..";
 import { fixtureDir } from "../testUtil";
 
-describe.only("cp", () => {
-  it("cp file", () => {
-    const source = path.join(fixtureDir, "a");
+const source = path.join(fixtureDir, "a");
+
+describe("cp()", () => {
+  it("file", () => {
     const content = fs.readFileSync(source, "utf8");
     const destination = path.join(os.tmpdir(), uuidv4());
     const res = cp(source, destination);
-    assert.equal(res, destination);
+    assert.equal(res.path, destination);
     assert.equal(content, fs.readFileSync(destination, "utf8"));
   });
 
-  it("cp force", () => {
-    const source = path.join(fixtureDir, "a");
+  it("force", () => {
     const content = fs.readFileSync(source, "utf8");
     const destination = path.join(os.tmpdir(), uuidv4());
     cp(source, destination);
@@ -25,10 +25,10 @@ describe.only("cp", () => {
     assert.equal(content, fs.readFileSync(destination, "utf8"));
   });
 
-  it("cp dir", () => {
-    const source = fixtureDir;
+  it("dir", () => {
     const destination = path.join(os.tmpdir(), uuidv4());
-    const res = cp(source, destination, { recursive: true });
-    assert.equal(res, destination);
+    const res = cp(fixtureDir, destination, { recursive: true });
+    assert.equal(res.path, destination);
+    assert.ok(res.isDir());
   });
 });
