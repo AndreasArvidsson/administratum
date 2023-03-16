@@ -1,11 +1,7 @@
+import fs from "fs";
 import glob from "glob";
 import os from "os";
 import pathlib from "path";
-import { mkdirs } from "./mkdir";
-import { mv } from "./mv";
-import fs from "fs";
-
-export type PathLike = Path | string;
 
 export class Path {
   readonly path: string;
@@ -14,8 +10,24 @@ export class Path {
     return new Path(os.homedir());
   }
 
-  constructor(path: PathLike) {
-    this.path = pathString(path);
+  static temp(): Path {
+    return new Path(os.tmpdir());
+  }
+
+  static cwd(): Path {
+    return new Path(process.cwd());
+  }
+
+  static oldPWD(): Path {
+    if (!process.env.OLDPWD) {
+      throw Error("Could not find previous directory");
+    } else {
+      return new Path(process.env.OLDPWD);
+    }
+  }
+
+  constructor(path: Path | string) {
+    this.path = path instanceof Path ? path.path : pathlib.resolve(path);
   }
 
   get name(): string {
@@ -26,6 +38,30 @@ export class Path {
     return pathlib.extname(this.path);
   }
 
+  exists(): boolean {
+    return fs.existsSync(this.path);
+  }
+
+  isFile(): boolean {
+    return fs.statSync(this.path).isFile();
+  }
+
+  isDir(): boolean {
+    return fs.statSync(this.path).isDirectory();
+  }
+
+  size(): number {
+    return fs.statSync(this.path).size;
+  }
+
+  equals(path: Path): boolean {
+    return this.path === path.path;
+  }
+
+  toString(): string {
+    return this.path;
+  }
+
   join(...sub: string[]): Path {
     return new Path(pathlib.join(this.path, ...sub));
   }
@@ -34,12 +70,14 @@ export class Path {
     return new Path(pathlib.dirname(this.path));
   }
 
-  to(path: string): Path {
-    return new Path(pathlib.relative(this.path, path));
+  relative(path: Path | string): Path {
+    return new Path(
+      pathlib.relative(this.path, path instanceof Path ? path.path : path)
+    );
   }
 
-  from(path: string): Path {
-    return new Path(pathlib.relative(path, this.path));
+  files(): Path[] {
+    return fs.readdirSync(this.path).map((f) => this.join(f));
   }
 
   glob(pattern: string): Path[] {
@@ -51,8 +89,4 @@ export class Path {
 
 export const getCtime = (path: Path) => {
   return fs.statSync(path.path).ctime;
-};
-
-export const pathString = (path: PathLike) => {
-  return path instanceof Path ? path.path : pathlib.resolve(path);
 };

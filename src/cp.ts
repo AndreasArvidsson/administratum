@@ -1,35 +1,34 @@
 import fs from "fs";
-import path from "path";
+import { Path } from ".";
 
 interface Options {
   recursive?: boolean;
   force?: boolean;
 }
 
-export const cp = async (
-  source: string,
-  destination: string,
+export const cp = (
+  source: Path | string,
+  destination: Path | string,
   options: Options = {}
-) => {
-  source = path.resolve(source);
-  destination = path.resolve(destination);
+): Path => {
+  source = new Path(source);
+  destination = new Path(destination);
 
-  if (source === destination) {
+  if (source.equals(destination)) {
     throw Error(`Can't copy to self: '${source}'`);
   }
 
-  if (!fs.existsSync(source)) {
+  if (!source.exists()) {
     throw Error(`No such file or directory: '${source}'`);
   }
 
-  const stats = fs.statSync(source);
-  if (stats.isDirectory()) {
+  if (source.isDir()) {
     if (!options.recursive) {
       throw Error(`Source is a directory: '${source}'`);
     }
   }
 
-  fs.cpSync(source, destination, {
+  fs.cpSync(source.path, destination.path, {
     errorOnExist: true,
     recursive: true,
     force: options.force ?? false,

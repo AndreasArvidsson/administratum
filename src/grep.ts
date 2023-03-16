@@ -1,5 +1,5 @@
 import fs from "fs";
-import path from "path";
+import { Path } from ".";
 
 interface Options {
   lineNumber?: boolean;
@@ -9,32 +9,31 @@ interface Options {
   count?: boolean;
 }
 
-export const grep = async (
+export const grep = (
   regex: RegExp,
-  file: string,
+  file: Path | string,
   options: Options = {}
-) => {
-  file = path.resolve(file);
+): string[] => {
+  file = new Path(file);
 
-  if (!fs.existsSync(file)) {
+  if (!file.exists()) {
     throw Error(`No such file : '${file}'`);
   }
 
-  const stats = fs.statSync(file);
-  if (stats.isDirectory()) {
+  if (file.isDir()) {
     throw Error(`File is a directory: '${file}'`);
   }
 
   const result: string[] = [];
 
-  const lines = fs.readFileSync(file, "utf8").split("\n");
+  const lines = fs.readFileSync(file.path, "utf8").split("\n");
 
   if (options.count) {
     const count =
       options.maxCount != null
         ? Math.min(options.maxCount, lines.length)
         : lines.length;
-    return count.toString();
+    return [count.toString()];
   }
 
   for (let i = 0; i < lines.length; ++i) {
@@ -73,5 +72,13 @@ export const grep = async (
     }
   }
 
-  return result.join("\n");
+  return result;
+};
+
+export const grepStr = (
+  regex: RegExp,
+  file: Path | string,
+  options: Options = {}
+): string => {
+  return grep(regex, file, options).join("\n");
 };

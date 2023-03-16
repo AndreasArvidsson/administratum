@@ -1,9 +1,9 @@
-export const after = (timeout: number | string, callback: () => void) => {
+export const after = (timeout: string, callback: () => void) => {
   const timeoutMs = getTimeoutMs(timeout);
   setTimeout(() => callback(), timeoutMs);
 };
 
-export const sleep = async (timeout: number | string) => {
+export const sleep = async (timeout: string): Promise<void> => {
   const timeoutMs = getTimeoutMs(timeout);
   return new Promise<void>((resolve) => {
     setTimeout(() => resolve(), timeoutMs);
@@ -13,7 +13,7 @@ export const sleep = async (timeout: number | string) => {
 export const countdown = (
   seconds: number,
   progress: (secondsLeft: number) => void
-) => {
+): void => {
   progress(seconds);
   if (seconds) {
     setTimeout(() => {
@@ -22,10 +22,7 @@ export const countdown = (
   }
 };
 
-function getTimeoutMs(timeout: number | string) {
-  if (typeof timeout === "number") {
-    return timeout * 1000;
-  }
+function getTimeoutMs(timeout: string): number {
   const match = timeout.match(/(\d+)(s|ms)/);
   if (!match) {
     throw Error(`Invalid timeout '${timeout}'`);

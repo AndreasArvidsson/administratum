@@ -4,7 +4,7 @@ export const progressPromises = (
   title: string,
   promises: Promise<unknown>[],
   format: (index: number, resolved: boolean, response: unknown) => string
-) => {
+): Promise<unknown> => {
   let first = true;
   let numResolved = 0;
   const isResolved = new Array<boolean>(promises.length);

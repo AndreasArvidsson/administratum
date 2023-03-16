@@ -1,26 +1,26 @@
-import _path from "path";
 import fs from "fs";
+import { Path } from ".";
 
 interface Options {
   long?: boolean;
   all?: boolean;
 }
 
-export const ls = async (path: string, options: Options = {}) => {
-  path = _path.resolve(path);
+export const ls = (path: Path | string, options: Options = {}): string => {
+  path = new Path(path);
 
-  if (!fs.existsSync(path)) {
+  if (!path.exists()) {
     throw Error(`No such file or directory: '${path}'`);
   }
 
   const result: string[] = [];
 
-  function addFile(name: string, abs: string, stat?: fs.Stats) {
-    if (!options.all && name[0] === ".") {
+  function addFile(path: Path) {
+    if (!options.all && path.name[0] === ".") {
       return;
     }
     if (options.long) {
-      stat = stat ?? fs.statSync(abs);
+      const stat = fs.statSync(path.path);
       result.push(
         [
           stat.mode,
@@ -29,21 +29,20 @@ export const ls = async (path: string, options: Options = {}) => {
           stat.gid,
           stat.size,
           stat.mtime,
-          name,
+          path.name,
         ].join(" ")
       );
     } else {
-      result.push(name);
+      result.push(path.name);
     }
   }
 
-  const stats = fs.statSync(path);
-  if (stats.isDirectory()) {
-    for (const file of fs.readdirSync(path)) {
-      addFile(file, _path.join(path, file));
+  if (path.isDir()) {
+    for (const file of path.files()) {
+      addFile(file);
     }
   } else {
-    addFile(path, path, stats);
+    addFile(path);
   }
 
   return result.join(options.long ? "\n" : " ");

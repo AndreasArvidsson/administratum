@@ -1,20 +1,19 @@
 import fs from "fs";
-import _path from "path";
+import { Path } from ".";
 
-export const touch = async (path: string) => {
-  const file = _path.resolve(path);
+export const touch = (path: Path | string): Path => {
+  path = new Path(path);
 
-  if (fs.existsSync(file)) {
-    const stats = fs.statSync(file);
-    if (stats.isDirectory()) {
-      throw Error(`Path is directory: '${file}'`);
+  if (path.exists()) {
+    if (path.isDir()) {
+      throw Error(`Path is directory: '${path}'`);
     }
   }
 
-  fs.closeSync(fs.openSync(file, "a"));
+  fs.closeSync(fs.openSync(path.path, "a"));
 
   const now = new Date();
-  fs.utimesSync(file, now, now);
+  fs.utimesSync(path.path, now, now);
 
-  return file;
+  return path;
 };

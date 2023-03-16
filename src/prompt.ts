@@ -1,4 +1,4 @@
-export const promptContinue = async () => {
+export const promptContinue = async (): Promise<void> => {
   const doContinue = await promptYesNo("Do you wish to continue?");
   if (doContinue) {
     console.log("");
@@ -7,7 +7,7 @@ export const promptContinue = async () => {
   }
 };
 
-export const promptYesNo = async (question: string) => {
+export const promptYesNo = async (question: string): Promise<boolean> => {
   for (;;) {
     console.log(`- ${question} [Y/n]`);
     const line = await readLine();
@@ -26,7 +26,7 @@ export const promptYesNo = async (question: string) => {
   }
 };
 
-const readLine = () => {
+const readLine = (): Promise<string> => {
   return new Promise<string>((resolve) => {
     process.stdin.setEncoding("utf-8");
     process.stdin.once("data", (data) => {

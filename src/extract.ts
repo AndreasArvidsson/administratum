@@ -1,44 +1,41 @@
-import path from "path";
-import fs from "fs";
 import extractZip from "extract-zip";
 import tar from "tar";
+import { Path } from ".";
 
 interface Options {
   force?: boolean;
 }
 
-function unzip(source: string, destination: string) {
-  return extractZip(source, { dir: destination });
+function unzip(source: Path, destination: Path): Promise<void> {
+  return extractZip(source.path, { dir: destination.path });
 }
 
-function untar(source: string, destination: string) {
+function untar(source: Path, destination: Path): Promise<void> {
   return tar.extract({
-    file: source,
-    cwd: destination,
+    file: source.path,
+    cwd: destination.path,
   });
 }
 
 export const extract = async (
-  source: string,
-  destination?: string,
+  source: Path | string,
+  destination?: Path | string,
   options: Options = {}
-) => {
-  source = path.resolve(source);
-  destination = path.resolve(destination ?? path.basename(source));
-  const ext = path.extname(source);
+): Promise<Path> => {
+  source = new Path(source);
+  destination = new Path(destination ?? source.name);
 
-  if (!fs.existsSync(source)) {
+  if (!source.exists) {
     throw Error(`No such file: '${source}'`);
   }
 
-  if (fs.existsSync(destination)) {
-    const stats = fs.statSync(destination);
-    if (stats.isFile() && !options.force) {
+  if (destination.exists()) {
+    if (destination.isFile() && !options.force) {
       throw Error(`Destination file already exists: '${destination}'`);
     }
   }
 
-  switch (ext) {
+  switch (source.ext) {
     case ".zip":
       await unzip(source, destination);
       break;
@@ -46,7 +43,7 @@ export const extract = async (
       await untar(source, destination);
       break;
     default:
-      throw new Error(`Unknown archive '${ext}'`);
+      throw new Error(`Unknown archive '${source.ext}'`);
   }
 
   return destination;

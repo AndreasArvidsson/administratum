@@ -1,19 +1,17 @@
-import os from "os";
+import { Path } from ".";
 
-export const cd = (dir: string) => {
+export const cd = (dir: Path | string): Path => {
   if (!dir) {
-    dir = os.homedir();
-  }
-
-  if (dir === "-") {
-    if (!process.env.OLDPWD) {
-      throw Error("Could not find previous directory");
-    } else {
-      dir = process.env.OLDPWD;
-    }
+    dir = Path.home();
+  } else if (dir === "-") {
+    dir = Path.oldPWD();
+  } else {
+    dir = new Path(dir);
   }
 
   const curDir = process.cwd();
-  process.chdir(dir);
+  process.chdir(dir.path);
   process.env.OLDPWD = curDir;
+
+  return dir;
 };

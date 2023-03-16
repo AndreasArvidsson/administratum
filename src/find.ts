@@ -1,49 +1,42 @@
-import _path from "path";
 import fs from "fs";
+import { Path } from ".";
 
 interface Options {
   type?: "d" | "f";
   name?: RegExp;
 }
 
-export const find = async (path: string, options: Options = {}) => {
-  path = _path.resolve(path);
-  const root = _path.resolve(process.cwd());
+export const find = (path: Path | string, options: Options = {}): Path[] => {
+  path = new Path(path);
+  const root = Path.cwd();
 
-  if (!fs.existsSync(path)) {
+  if (!path.exists()) {
     throw Error(`No such file or directory: '${path}'`);
   }
 
-  function findFile(
-    name: string,
-    filePath: string,
-    options: Options
-  ): string[] {
-    const matched = options.name ? options.name.test(name) : true;
-    const stats = fs.statSync(filePath);
+  function findFile(file: Path, options: Options): Path[] {
+    const matched = options.name ? options.name.test(file.name) : true;
 
-    if (stats.isDirectory()) {
-      const children = fs
-        .readdirSync(filePath)
-        .flatMap((f) => findFile(f, _path.join(filePath, f), options));
+    if (file.isDir()) {
+      const children = file.files().flatMap((f) => findFile(f, options));
 
       if (matched && options.type !== "f") {
-        return [_path.relative(root, filePath), ...children];
+        return [root.relative(file), ...children];
       }
 
       return children;
     }
 
     if (matched && options.type !== "d") {
-      return [_path.relative(root, filePath)];
+      return [root.relative(file)];
     }
 
     return [];
   }
 
-  return findFile(_path.basename(path), path, options);
+  return findFile(path, options);
 };
 
-export const findStr = async (path: string, options: Options = {}) => {
-  return (await find(path, options)).join("\n");
+export const findStr = (path: string, options: Options = {}): string => {
+  return find(path, options).join("\n");
 };

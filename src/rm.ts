@@ -1,25 +1,24 @@
 import fs from "fs";
-import _path from "path";
+import { Path } from ".";
 
 interface Options {
   recursive?: boolean;
 }
 
-export const rm = async (path: string, options: Options = {}) => {
-  const src = _path.resolve(path);
+export const rm = (path: Path | string, options: Options = {}): Path => {
+  path = new Path(path);
 
-  if (!fs.existsSync(src)) {
-    throw Error(`No such file or directory: '${src}'`);
+  if (!path.exists()) {
+    throw Error(`No such file or directory: '${path}'`);
   }
 
-  const stats = fs.statSync(src);
-  if (stats.isDirectory()) {
+  if (path.isDir()) {
     if (!options.recursive) {
-      throw Error(`Path is a directory: '${src}'`);
+      throw Error(`Path is a directory: '${path}'`);
     }
   }
 
-  fs.rmSync(src, { recursive: true });
+  fs.rmSync(path.path, { recursive: true });
 
-  return src;
+  return path;
 };

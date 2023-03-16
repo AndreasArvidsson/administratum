@@ -1,14 +1,18 @@
 import fs from "fs";
-import { PathLike, pathString } from "./Path";
+import { Path } from ".";
 
-export const mkdir = (path: PathLike) => {
-  path = pathString(path);
+export const mkdir = (path: Path | string): Path => {
+  path = new Path(path);
 
-  return fs.promises.mkdir(path);
+  fs.mkdirSync(path.path);
+
+  return path;
 };
 
-export const mkdirs = (path: PathLike) => {
-  path = pathString(path);
+export const mkdirs = (path: Path | string): Path => {
+  path = new Path(path);
 
-  return fs.promises.mkdir(path, { recursive: true });
+  fs.mkdirSync(path.path, { recursive: true });
+
+  return path;
 };

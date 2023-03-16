@@ -1,36 +1,34 @@
 import fs from "fs";
-import path from "path";
-import { PathLike, pathString } from "./Path";
+import { Path } from ".";
 
 interface Options {
   force?: boolean;
 }
 
-export const mv = async (
-  source: PathLike,
-  destination: PathLike,
+export const mv = (
+  source: Path | string,
+  destination: Path | string,
   options: Options = {}
-) => {
-  source = pathString(source);
-  destination = pathString(destination);
+): Path => {
+  source = new Path(source);
+  destination = new Path(destination);
 
-  if (source === destination) {
+  if (source.equals(destination)) {
     throw Error(`Can't move to self: '${source}'`);
   }
 
-  if (!fs.existsSync(source)) {
+  if (!source.exists()) {
     throw Error(`No such file or directory: '${source}'`);
   }
 
-  if (fs.existsSync(destination)) {
-    const stats = fs.statSync(destination);
-    if (stats.isFile() && !options.force) {
+  if (destination.exists()) {
+    if (destination.isFile() && !options.force) {
       throw Error(`Destination file already exists: '${destination}'`);
     }
-    destination = path.join(destination, path.basename(source));
+    destination = destination.join(source.name);
   }
 
-  fs.renameSync(source, destination);
+  fs.renameSync(source.path, destination.path);
 
   return destination;
 };

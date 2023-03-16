@@ -1,21 +1,21 @@
+import fs from "fs";
 import http from "http";
 import https from "https";
-import fs from "fs";
-import _url from "url";
-import _path from "path";
+import urllib from "url";
+import { Path } from ".";
 
 interface Response {
   url: string;
-  file: string;
+  file: Path;
   size?: number;
   message: string;
 }
 
-export const fetch = (url: string, path?: string) => {
+export const fetch = (url: string, path?: Path | string): Promise<Response> => {
   return new Promise<Response>((resolve, reject) => {
-    const { href, protocol } = _url.parse(url);
+    const { href, protocol } = urllib.parse(url);
     const lib = protocol === "https:" ? https : http;
-    const filePath = _path.resolve(path ?? url.split("/").at(-1) ?? "file");
+    const filePath = new Path(path ?? url.split("/").at(-1) ?? "file");
 
     const request = lib.get(href, (response) => {
       if (response.statusCode !== 200) {
@@ -26,9 +26,8 @@ export const fetch = (url: string, path?: string) => {
         ? parseInt(response.headers["content-length"])
         : undefined;
 
-      if (contentLength && fs.existsSync(filePath)) {
-        const stats = fs.statSync(filePath);
-        if (contentLength === stats.size) {
+      if (contentLength && filePath.exists()) {
+        if (contentLength === filePath.size()) {
           resolve({
             url: url,
             file: filePath,
@@ -38,7 +37,7 @@ export const fetch = (url: string, path?: string) => {
         }
       }
 
-      const file = fs.createWriteStream(filePath);
+      const file = fs.createWriteStream(filePath.path);
       response.pipe(file);
 
       file.on("finish", () => {
