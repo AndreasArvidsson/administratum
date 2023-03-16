@@ -18,6 +18,10 @@ export class Path {
     return new Path(process.cwd());
   }
 
+  static sep(): string {
+    return pathlib.sep;
+  }
+
   static oldPWD(): Path {
     if (!process.env.OLDPWD) {
       throw Error("Could not find previous directory");
@@ -70,10 +74,8 @@ export class Path {
     return new Path(pathlib.dirname(this.path));
   }
 
-  relative(path: Path | string): Path {
-    return new Path(
-      pathlib.relative(this.path, path instanceof Path ? path.path : path)
-    );
+  relative(path: Path | string): string {
+    return pathlib.relative(this.path, path instanceof Path ? path.path : path);
   }
 
   files(): Path[] {

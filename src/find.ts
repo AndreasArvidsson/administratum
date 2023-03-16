@@ -1,4 +1,3 @@
-import fs from "fs";
 import { Path } from ".";
 
 interface Options {
@@ -8,7 +7,6 @@ interface Options {
 
 export const find = (path: Path | string, options: Options = {}): Path[] => {
   path = new Path(path);
-  const root = Path.cwd();
 
   if (!path.exists()) {
     throw Error(`No such file or directory: '${path}'`);
@@ -21,14 +19,14 @@ export const find = (path: Path | string, options: Options = {}): Path[] => {
       const children = file.files().flatMap((f) => findFile(f, options));
 
       if (matched && options.type !== "f") {
-        return [root.relative(file), ...children];
+        return [file, ...children];
       }
 
       return children;
     }
 
     if (matched && options.type !== "d") {
-      return [root.relative(file)];
+      return [file];
     }
 
     return [];
@@ -38,5 +36,8 @@ export const find = (path: Path | string, options: Options = {}): Path[] => {
 };
 
 export const findStr = (path: string, options: Options = {}): string => {
-  return find(path, options).join("\n");
+  const root = Path.cwd();
+  return find(path, options)
+    .map((f) => root.relative(f))
+    .join("\n");
 };
