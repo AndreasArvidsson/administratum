@@ -15,6 +15,8 @@ export const ls = (path: Path | string, options: Options = {}): string => {
 
   const result: string[] = [];
 
+  // TODO: Proper column spacing
+
   function addFile(path: Path) {
     if (!options.all && path.name[0] === ".") {
       return;
@@ -33,16 +35,15 @@ export const ls = (path: Path | string, options: Options = {}): string => {
   }
 
   const res = result.join(options.long || options.one ? "\n" : " ");
-
-  return options.long ? `total ${result.length}\n${res}` : res;
+  // TODO: total should be size!
+  // return options.long ? `total ${result.length}\n${res}` : res;
+  return res;
 };
 
 function getLongLine(path: Path): string {
   const stats = path.stats();
   return [
-    stats.mode.toString(8),
-    // https://stackoverflow.com/questions/4087427/python-meaning-of-st-mode
-    // https://chmod-calculator.com
+    getPermissions(stats.mode),
     stats.nlink,
     stats.uid,
     stats.gid,
@@ -77,4 +78,27 @@ const months = [
 
 function pad(num: number) {
   return num.toString().padStart(2, "0");
+}
+
+function getPermissions(mode: number): string {
+  const str = mode.toString(8);
+  return range(1, 4)
+    .map((i) => getPermission(str.at(-i)!))
+    .join("");
+}
+
+function getPermission(char: string): string {
+  const num = parseInt(char);
+  const r = (num & 4) !== 0;
+  const w = (num & 2) !== 0;
+  const x = (num & 1) !== 0;
+  return `${r ? "r" : ""}${w ? "w" : ""}${x ? "x" : "-"}`;
+}
+
+function range(from: number, end: number, step = 1): number[] {
+  const res: number[] = [];
+  for (let i = from; i < end; i += step) {
+    res.push(i);
+  }
+  return res;
 }

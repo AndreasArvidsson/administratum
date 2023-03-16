@@ -2,7 +2,7 @@ import assert from "assert";
 import { ls } from "../..";
 import { fixturesDir } from "../testUtil";
 
-describe.only("ls", () => {
+describe("ls", () => {
   it("ls", () => {
     const res = ls(fixturesDir);
     assert.equal(res, "a b c");
@@ -18,9 +18,8 @@ describe.only("ls", () => {
     assert.equal(res, "a\nb\nc");
   });
 
-  it.only("long", () => {
+  it("long", () => {
     const res = ls(fixturesDir, { long: true });
-    console.log(res);
-    assert.equal(res, "a b c");
+    assert.ok(/[a-z-]{9} \d \d \d \d+ \w{3} \d{2} \d{2}:\d{2} \w+/.test(res));
   });
 });

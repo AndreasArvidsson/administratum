@@ -9,12 +9,13 @@
     ],
     "root": true,
     "parserOptions": {
-        "ecmaVersion": 2020,
+        "ecmaVersion": 2022,
         "sourceType": "module"
     },
     "rules": {
         "@typescript-eslint/naming-convention": "warn",
         "@typescript-eslint/semi": "warn",
+        "@typescript-eslint/no-non-null-assertion": "off",
         "curly": "error",
         "no-throw-literal": "error",
         "eqeqeq": [
