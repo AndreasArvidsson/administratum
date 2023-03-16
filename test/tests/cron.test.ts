@@ -1,21 +1,24 @@
 import assert from "assert";
 import { sleep, after, countdown } from "../..";
 
+const t = 25;
+const ts = `${t}ms`;
+
 describe("cron", () => {
   it("sleep()", async () => {
     const t1 = Date.now();
-    await sleep("100ms");
+    await sleep(ts);
     const t2 = Date.now();
-    assert.ok(t2 >= t1 + 100);
+    assert.ok(t2 >= t1 + t);
   });
 
   it("after()", async () => {
     const t1 = Date.now();
     await new Promise<void>((resolve) => {
-      after("100ms", () => resolve());
+      after(ts, () => resolve());
     });
     const t2 = Date.now();
-    assert.ok(t2 >= t1 + 100);
+    assert.ok(t2 >= t1 + t);
   });
 
   it("countdown()", async () => {
@@ -30,7 +33,7 @@ describe("cron", () => {
       });
     });
     const t2 = Date.now();
-    assert.ok(t2 >= t1 + 100);
+    assert.ok(t2 >= t1 + 1000);
     assert.deepEqual(res, [1, 0]);
   });
 });
