@@ -1,6 +1,6 @@
 import { Path } from ".";
 
-export const cd = (dir: Path | string): Path => {
+export const cd = (dir?: Path | string): Path => {
   if (!dir) {
     dir = Path.home();
   } else if (dir === "-") {
