@@ -1,5 +1,5 @@
 import fs from "fs";
-import { Path } from ".";
+import { Path, readFile } from ".";
 
 interface Options {
   lineNumber?: boolean;
@@ -24,7 +24,7 @@ export const grep = (
     throw Error(`File is a directory: '${file}'`);
   }
 
-  const lines = fs.readFileSync(file.path, "utf8").split("\n");
+  const lines = readFile(file).split("\n");
   const result: string[] = [];
 
   for (let i = 0; i < lines.length; ++i) {
