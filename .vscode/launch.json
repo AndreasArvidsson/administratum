@@ -18,6 +18,20 @@
                 "${workspaceFolder}/**",
                 "!**/node_modules/**"
             ]
+        },
+        {
+            "name": "Run tests",
+            "type": "node",
+            "request": "launch",
+            "runtimeExecutable": "npm",
+            "runtimeArgs": [
+                "run",
+                "test"
+            ],
+            "resolveSourceMapLocations": [
+                "${workspaceFolder}/**",
+                "!**/node_modules/**"
+            ]
         }
     ]
 }
