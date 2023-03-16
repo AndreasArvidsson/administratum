@@ -1,9 +1,9 @@
 import assert from "assert";
 import path from "path";
 import { grep, grepStr } from "../..";
-import { fixtureDir } from "../testUtil";
+import { fixturesDir } from "../testUtil";
 
-const file = path.join(fixtureDir, "a");
+const file = path.join(fixturesDir, "a");
 
 describe("grep", () => {
   it("grep()", () => {

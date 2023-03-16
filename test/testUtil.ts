@@ -1,1 +1,1 @@
-export const fixtureDir = `${__dirname}/fixtures`;
+export const fixturesDir = `${__dirname}/fixtures`;

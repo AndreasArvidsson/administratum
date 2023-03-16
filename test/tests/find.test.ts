@@ -1,14 +1,14 @@
 import assert from "assert";
 import path from "path";
 import { find, findStr } from "../..";
-import { fixtureDir } from "../testUtil";
+import { fixturesDir } from "../testUtil";
 
 const dir = "fixtures";
-const files = ["a", "b", "c"];
+const files = [".hidden", "a", "b", "c"];
 
 describe("find", () => {
   it("find()", () => {
-    const res = find(fixtureDir);
+    const res = find(fixturesDir);
     assert.deepEqual(
       res.map((f) => f.name),
       [dir, ...files]
@@ -17,7 +17,7 @@ describe("find", () => {
 
   it("findStr()", () => {
     process.chdir(path.join(__dirname, "..", ".."));
-    const res = findStr(fixtureDir);
+    const res = findStr(fixturesDir);
     const expected = [
       ["test", dir].join(path.sep),
       ...files.map((f) => ["test", dir, f].join(path.sep)),
@@ -26,7 +26,7 @@ describe("find", () => {
   });
 
   it("name", () => {
-    const res = find(fixtureDir, { name: /b/ });
+    const res = find(fixturesDir, { name: /b/ });
     assert.deepEqual(
       res.map((f) => f.name),
       ["b"]
@@ -34,7 +34,7 @@ describe("find", () => {
   });
 
   it("type: f", () => {
-    const res = find(fixtureDir, { type: "f" });
+    const res = find(fixturesDir, { type: "f" });
     assert.deepEqual(
       res.map((f) => f.name),
       files
@@ -42,7 +42,7 @@ describe("find", () => {
   });
 
   it("type: d", () => {
-    const res = find(fixtureDir, { type: "d" });
+    const res = find(fixturesDir, { type: "d" });
     assert.deepEqual(
       res.map((f) => f.name),
       [dir]

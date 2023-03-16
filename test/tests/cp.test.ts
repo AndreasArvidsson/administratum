@@ -4,9 +4,9 @@ import os from "os";
 import path from "path";
 import { v4 as uuidv4 } from "uuid";
 import { cp } from "../..";
-import { fixtureDir } from "../testUtil";
+import { fixturesDir } from "../testUtil";
 
-const source = path.join(fixtureDir, "a");
+const source = path.join(fixturesDir, "a");
 
 describe("cp()", () => {
   it("file", () => {
@@ -27,7 +27,7 @@ describe("cp()", () => {
 
   it("dir", () => {
     const destination = path.join(os.tmpdir(), uuidv4());
-    const res = cp(fixtureDir, destination, { recursive: true });
+    const res = cp(fixturesDir, destination, { recursive: true });
     assert.equal(res.path, destination);
     assert.ok(res.isDir());
   });
