@@ -83,7 +83,10 @@ export class Path {
   }
 
   files(): Path[] {
-    return fs.readdirSync(this.path).map((f) => this.join(f));
+    return fs
+      .readdirSync(this.path)
+      .sort()
+      .map((f) => this.join(f));
   }
 
   glob(pattern: string): Path[] {

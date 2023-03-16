@@ -12,7 +12,7 @@
     "scripts": {
         "start": "tsx test/runWorkflows.ts",
         "test": "tsx test/runTests.ts",
-        "examples": "ts-node test/examples.ts",
+        "examples": "tsx test/examples.ts",
         "build": "tsc -p ./",
         "lint": "eslint . --ext .ts,.tsx",
         "watch": "tsc -watch -p ./"
