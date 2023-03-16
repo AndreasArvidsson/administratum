@@ -7,7 +7,7 @@ const mocha = new Mocha({
 });
 
 const cwd = path.join(__dirname, "tests");
-const files = globSync("**/**.test.ts", { cwd });
+const files = globSync("**/**.test.ts", { cwd }).sort();
 
 files.forEach((f) => mocha.addFile(path.resolve(cwd, f)));
 

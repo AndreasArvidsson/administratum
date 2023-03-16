@@ -1,4 +1,4 @@
-import fs from "fs";
+import fs, { Stats } from "fs";
 import glob from "glob";
 import os from "os";
 import pathlib from "path";
@@ -47,15 +47,19 @@ export class Path {
   }
 
   isFile(): boolean {
-    return fs.statSync(this.path).isFile();
+    return this.stats().isFile();
   }
 
   isDir(): boolean {
-    return fs.statSync(this.path).isDirectory();
+    return this.stats().isDirectory();
   }
 
   size(): number {
-    return fs.statSync(this.path).size;
+    return this.stats().size;
+  }
+
+  stats(): Stats {
+    return fs.statSync(this.path);
   }
 
   equals(path: Path): boolean {
@@ -90,5 +94,5 @@ export class Path {
 }
 
 export const getCtime = (path: Path) => {
-  return fs.statSync(path.path).ctime;
+  return path.stats().ctime;
 };
