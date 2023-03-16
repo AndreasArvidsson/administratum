@@ -10,8 +10,8 @@
         "url": "https://github.com/AndreasArvidsson/administratum"
     },
     "scripts": {
-        "start": "ts-node test/runWorkflows.ts",
-        "test": "ts-node test/runTests.ts",
+        "start": "tsx test/runWorkflows.ts",
+        "test": "tsx test/runTests.ts",
         "examples": "ts-node test/examples.ts",
         "build": "tsc -p ./",
         "lint": "eslint . --ext .ts,.tsx",

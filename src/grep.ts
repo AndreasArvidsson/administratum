@@ -24,17 +24,8 @@ export const grep = (
     throw Error(`File is a directory: '${file}'`);
   }
 
-  const result: string[] = [];
-
   const lines = fs.readFileSync(file.path, "utf8").split("\n");
-
-  if (options.count) {
-    const count =
-      options.maxCount != null
-        ? Math.min(options.maxCount, lines.length)
-        : lines.length;
-    return [count.toString()];
-  }
+  const result: string[] = [];
 
   for (let i = 0; i < lines.length; ++i) {
     const line = lines[i];
@@ -70,6 +61,10 @@ export const grep = (
     if (options.maxCount != null && options.maxCount === result.length) {
       break;
     }
+  }
+
+  if (options.count) {
+    return [result.length.toString()];
   }
 
   return result;
