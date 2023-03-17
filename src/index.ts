@@ -1,5 +1,6 @@
 export * from "./Administratum";
 export * from "./cd";
+export * from "./cmd";
 export * from "./cp";
 export * from "./cron";
 export * from "./extract";
@@ -15,6 +16,5 @@ export * from "./progress";
 export * from "./prompt";
 export * from "./readFile";
 export * from "./rm";
-export * from "./shell";
 export * from "./tempFile";
 export * from "./touch";

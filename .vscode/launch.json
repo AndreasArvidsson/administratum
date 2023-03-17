@@ -32,6 +32,20 @@
                 "${workspaceFolder}/**",
                 "!**/node_modules/**"
             ]
+        },
+        {
+            "name": "Run examples",
+            "type": "node",
+            "request": "launch",
+            "runtimeExecutable": "npm",
+            "runtimeArgs": [
+                "run",
+                "example"
+            ],
+            "resolveSourceMapLocations": [
+                "${workspaceFolder}/**",
+                "!**/node_modules/**"
+            ]
         }
     ]
 }
