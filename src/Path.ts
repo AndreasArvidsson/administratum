@@ -22,12 +22,11 @@ export class Path {
     return pathlib.sep;
   }
 
-  static oldPWD(): Path {
+  static oldPWD(): Path | undefined {
     if (!process.env.OLDPWD) {
-      throw Error("Could not find previous directory");
-    } else {
-      return new Path(process.env.OLDPWD);
+      return undefined;
     }
+    return new Path(process.env.OLDPWD);
   }
 
   constructor(path: Path | string) {
@@ -70,8 +69,8 @@ export class Path {
     return this.path;
   }
 
-  join(...sub: string[]): Path {
-    return new Path(pathlib.join(this.path, ...sub));
+  join(...paths: string[]): Path {
+    return new Path(pathlib.join(this.path, ...paths));
   }
 
   dir(): Path {
