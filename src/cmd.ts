@@ -1,13 +1,31 @@
 import childProcess from "child_process";
 
-function $(cmd: string): string;
-function $(file: string, args: string[]): string;
-function $(cmdOrFile: string, optArgs?: string[]): string {
+function cmdSync(cmd: string): string;
+function cmdSync(file: string, args: string[]): string;
+function cmdSync(cmdOrFile: string, optArgs?: string[]): string {
   const { file, args } = parseCommand(cmdOrFile, optArgs);
+  return spawnSync(file, args);
+}
 
+function cmdAsync(cmd: string): Promise<string>;
+function cmdAsync(file: string, args: string[]): Promise<string>;
+function cmdAsync(cmdOrFile: string, optArgs?: string[]): Promise<string> {
+  return new Promise((resolve, reject) => {
+    try {
+      const { file, args } = parseCommand(cmdOrFile, optArgs);
+      resolve(spawnSync(file, args));
+    } catch (error) {
+      reject(error);
+    }
+  });
+}
+
+export { cmdSync as $, cmdAsync as $$ };
+
+function spawnSync(file: string, args: string[]): string {
   const child = childProcess.spawnSync(file, args, {
-    shell: true,
     encoding: "utf-8",
+    shell: true,
   });
 
   const error = createError(file, args, child);
@@ -19,11 +37,8 @@ function $(cmdOrFile: string, optArgs?: string[]): string {
   return child.stdout;
 }
 
-export { $ };
-
 interface SpawnSyncReturns {
   pid: number;
-  output: Array<T | null>;
   stdout: string;
   stderr: string;
   status: number | null;

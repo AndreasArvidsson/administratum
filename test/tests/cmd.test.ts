@@ -1,5 +1,5 @@
 import assert from "assert";
-import { $ } from "../..";
+import { $, $$ } from "../..";
 
 describe("cmd", () => {
   it("$ time", () => {
@@ -7,8 +7,13 @@ describe("cmd", () => {
     assert.ok(/\d{2}:\d{2}/.test(res));
   });
 
-  it("$ cmd", () => {
+  it("$ sync", () => {
     const res = $("echo hello there");
+    assert.ok(/hello there/.test(res));
+  });
+
+  it("$ async", async () => {
+    const res = await $$("echo hello there");
     assert.ok(/hello there/.test(res));
   });
 
