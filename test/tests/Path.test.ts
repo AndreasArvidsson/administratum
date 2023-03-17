@@ -8,7 +8,7 @@ import { fixturesDir } from "../testUtil";
 const dir = new Path(fixturesDir);
 const file = dir.join("a");
 
-describe.only("Path", () => {
+describe("Path", () => {
   it("home()", () => {
     assert.equal(Path.home().path, os.homedir());
   });
