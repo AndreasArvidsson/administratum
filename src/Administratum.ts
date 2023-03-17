@@ -6,7 +6,7 @@ interface Options {
 }
 
 type Status = "completed" | "skipped";
-type Fn = () => void | Promise<unknown>;
+type Fn = () => unknown;
 
 interface Task {
   name: string;
@@ -116,10 +116,8 @@ export class Administratum {
     });
   }
 
-  private async done(voidOrPromise: void | Promise<unknown>) {
-    if (voidOrPromise) {
-      await voidOrPromise;
-    }
+  private async done(returnValue: unknown) {
+    await Promise.resolve(returnValue);
   }
 }
 
