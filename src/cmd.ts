@@ -1,16 +1,8 @@
 import childProcess from "child_process";
 
-function parseCommand(cmdOrFile: string, args?: string[]) {
-  if (args) {
-    return { file: cmdOrFile, args };
-  }
-  const parts = cmdOrFile.split(" ");
-  return { file: parts[0], args: parts.slice(1) };
-}
-
-function $(cmd: string): any;
-function $(file: string, args: string[]): any;
-function $(cmdOrFile: string, optArgs?: string[]): any {
+function $(cmd: string): string;
+function $(file: string, args: string[]): string;
+function $(cmdOrFile: string, optArgs?: string[]): string {
   const { file, args } = parseCommand(cmdOrFile, optArgs);
 
   const child = childProcess.spawnSync(file, args, {
@@ -37,6 +29,14 @@ interface SpawnSyncReturns {
   status: number | null;
   signal: NodeJS.Signals | null;
   error?: Error | undefined;
+}
+
+function parseCommand(cmdOrFile: string, args?: string[]) {
+  if (args) {
+    return { file: cmdOrFile, args };
+  }
+  const parts = cmdOrFile.split(" ");
+  return { file: parts[0], args: parts.slice(1) };
 }
 
 function createError(
