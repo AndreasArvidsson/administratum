@@ -2,6 +2,13 @@ import childProcess from "child_process";
 import onExit from "signal-exit";
 import { getStream, Options, parseCommand, parseOptions } from "./args";
 import { createError } from "./error";
+import {
+  OnEventBuilder,
+  EventListener,
+  EventListenerState,
+  OnEventCallback,
+  runEventListeners,
+} from "./eventListeners";
 
 function cmdSync(cmd: string, options?: Options): string;
 function cmdSync(file: string, args: string[], options?: Options): string;
@@ -57,20 +64,30 @@ function cmdAsync(
   return cmdAsyncInternal(cmdOrFile, optArgs, optOptions);
 }
 
-function cmdOn(
+function cmdAsyncOn(
   cmdOrFile: string,
   optArgs?: string[] | Options,
   optOptions?: Options
-): Promise<string> {
-  return cmdAsyncInternal(cmdOrFile, optArgs, optOptions);
+): OnEventBuilder {
+  const eventListeners: EventListener[] = [];
+  return {
+    on: function (regex: RegExp, callback: OnEventCallback) {
+      eventListeners.push({ regex, callback });
+      return this;
+    },
+    run: () => {
+      return cmdAsyncInternal(cmdOrFile, optArgs, optOptions, eventListeners);
+    },
+  };
 }
 
-export { cmdSync as $, cmdAsync as $$, cmdOn };
+export { cmdSync as $, cmdAsync as $$, cmdAsyncOn as $on };
 
 function cmdAsyncInternal(
   cmdOrFile: string,
   optArgs?: string[] | Options,
-  optOptions?: Options
+  optOptions?: Options,
+  eventListeners?: EventListener[]
 ): Promise<string> {
   return new Promise((resolve, reject) => {
     const { file, args } = parseCommand(cmdOrFile, optArgs);
@@ -95,6 +112,13 @@ function cmdAsyncInternal(
     const stdoutStream = getStream(stdout, child.stdin);
     const stderrStream = getStream(stderr, child.stdin);
 
+    const eventListenersState: EventListenerState = {
+      eventListeners: eventListeners ?? [],
+      stdoutBuffer,
+      bufferIndex: 0,
+      bufferLength: 0,
+    };
+
     if (stdinStream != null) {
       process.stdin.pipe(stdinStream);
     }
@@ -107,6 +131,11 @@ function cmdAsyncInternal(
 
     child.stdout.on("data", (data) => {
       stdoutBuffer.push(data);
+
+      if (eventListenersState.eventListeners.length !== 0) {
+        eventListenersState.bufferLength += data.length;
+        runEventListeners(eventListenersState);
+      }
     });
     child.stderr.on("data", (data) => {
       stderrBuffer.push(data);

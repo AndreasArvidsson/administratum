@@ -1,16 +1,16 @@
-echo T5
+echo T5 odd
 waitfor SomethingThatIsNeverHappening /t 1 2>NUL
 
-echo T4
+echo T4 even
 waitfor SomethingThatIsNeverHappening /t 1 2>NUL
 
-echo T3
+echo T3 odd
 waitfor SomethingThatIsNeverHappening /t 1 2>NUL
 
-echo T2
+echo T2 even
 waitfor SomethingThatIsNeverHappening /t 1 2>NUL
 
-echo T1
+echo T1 odd
 waitfor SomethingThatIsNeverHappening /t 1 2>NUL
 
 set /p DUMMY=Hit ENTER to continue...
