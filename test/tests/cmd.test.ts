@@ -7,6 +7,7 @@ import { fixturesDir } from "../testUtil";
 const options: Options = { stdout: "ignore" };
 const optionsOn: Options = { cwd: path.join(fixturesDir, "cmd") };
 const cmdCountdownFast = "cmd /q /c countdownFast.bat";
+const cmdPrompt = "cmd /q /c prompt.bat";
 
 describe("cmd", () => {
   it("$ time", () => {
@@ -27,6 +28,16 @@ describe("cmd", () => {
   it("$ file args", () => {
     const res = $("echo", ["hello there"], options);
     assert.ok(/hello there/.test(res));
+  });
+
+  it("$$ timeout", async () => {
+    try {
+      await $$(cmdPrompt, { ...optionsOn, timeout: "50ms" });
+      assert.fail();
+    } catch (error) {
+      assert.ok(error instanceof Error);
+      assert.ok(error.message.includes("SIGTERM"));
+    }
   });
 
   it("$ error", () => {
@@ -86,7 +97,7 @@ describe("cmd", () => {
   });
 
   it("$on e.write()", async () => {
-    const res = await $on("cmd /q /c prompt.bat", optionsOn)
+    const res = await $on(cmdPrompt, optionsOn)
       .on(/ENTER/, (e) => e.write("\n"))
       .run();
     assert.equal(res, "Hit ENTER to continue...DONE");

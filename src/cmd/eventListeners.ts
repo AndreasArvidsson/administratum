@@ -4,7 +4,6 @@ interface OnEvent {
   on: (regex: RegExp, callback: OnEventCallback) => void;
   write: (data: string) => void;
   kill: () => void;
-  // TODO: result
 }
 
 export type OnEventCallback = (event: OnEvent) => void;

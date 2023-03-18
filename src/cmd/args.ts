@@ -1,4 +1,5 @@
 import stream from "stream";
+import { getTimeoutMs } from "../cron";
 import { Path } from "../Path";
 
 type Pipe = "stdin" | "stdout" | "stderr" | "ignore" | stream.Writable;
@@ -11,9 +12,13 @@ export interface Options {
   stdout?: Pipe;
   stderr?: Pipe;
   env?: NodeJS.ProcessEnv;
+  timeout?: string | number;
 }
 
-type ParsedOptions = Required<Options> & { cwd: string };
+type ParsedOptions = Required<Options> & {
+  cwd: string;
+  timeout: number;
+};
 
 export function parseCommand(cmdOrFile: string, args?: string[] | Options) {
   if (Array.isArray(args)) {
@@ -27,7 +32,7 @@ export function parseOptions(
   optArgs?: string[] | Options,
   optOptions?: Options
 ): ParsedOptions {
-  const { encoding, cwd, stdin, stdout, stderr, shell, env } =
+  const { encoding, cwd, stdin, stdout, stderr, shell, env, timeout } =
     optArgs != null && !Array.isArray(optArgs) ? optArgs : optOptions ?? {};
   return {
     encoding: encoding ?? "utf-8",
@@ -37,6 +42,7 @@ export function parseOptions(
     stderr: stderr ?? "stderr",
     shell: shell ?? true,
     env: Object.assign({}, process.env, env),
+    timeout: timeout ? getTimeoutMs(timeout) : 0,
   };
 }
 

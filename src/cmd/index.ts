@@ -18,10 +18,8 @@ function cmdSync(
   optOptions?: Options
 ): string {
   const { file, args } = parseCommand(cmdOrFile, optArgs);
-  const { shell, cwd, encoding, stdin, stdout, stderr, env } = parseOptions(
-    optArgs,
-    optOptions
-  );
+  const { shell, cwd, encoding, stdin, stdout, stderr, env, timeout } =
+    parseOptions(optArgs, optOptions);
 
   const stdinStream = stdin === "stdin" ? "inherit" : getStream(stdin);
   const stdoutStream = getStream(stdout);
@@ -30,8 +28,9 @@ function cmdSync(
   const result = childProcess.spawnSync(file, args, {
     shell,
     cwd,
-    encoding,
     env,
+    timeout,
+    encoding,
     stdio: [stdinStream, stdoutStream, stderrStream],
   });
 
@@ -93,15 +92,14 @@ function cmdAsyncInternal(
 ): Promise<string> {
   return new Promise((resolve, reject) => {
     const { file, args } = parseCommand(cmdOrFile, optArgs);
-    const { cwd, encoding, stdin, stdout, stderr, shell, env } = parseOptions(
-      optArgs,
-      optOptions
-    );
+    const { cwd, encoding, stdin, stdout, stderr, shell, env, timeout } =
+      parseOptions(optArgs, optOptions);
 
     const child = childProcess.spawn(file, args, {
       shell,
       cwd,
       env,
+      timeout,
     });
 
     child.stdout.setEncoding(encoding);

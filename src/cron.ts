@@ -22,15 +22,23 @@ export const countdown = (
   }
 };
 
-function getTimeoutMs(timeout: string): number {
+export function getTimeoutMs(timeout: string | number): number {
+  if (typeof timeout === "number") {
+    return timeout;
+  }
+
   const match = timeout.match(/(\d+)(s|ms)/);
+
   if (!match) {
     throw Error(`Invalid timeout '${timeout}'`);
   }
+
   const value = parseInt(match[1]);
   const unit = match[2];
+
   if (unit.endsWith("ms")) {
     return value;
   }
+
   return value * 1000;
 }
