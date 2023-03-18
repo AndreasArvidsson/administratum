@@ -5,7 +5,7 @@ import pathlib from "path";
 import { getCtime, Path } from "../../src";
 import { fixturesDir } from "../testUtil";
 
-const dir = new Path(fixturesDir);
+const dir = new Path(fixturesDir).join("list");
 const file = dir.join("a");
 
 describe("Path", () => {

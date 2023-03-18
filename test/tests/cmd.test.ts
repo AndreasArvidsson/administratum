@@ -1,12 +1,16 @@
 import assert from "assert";
-import { $, $$, Options } from "../../src/cmd";
+import path from "path";
+import { $, $$, $on } from "../../src";
+import { Options } from "../../src/cmd/args";
+import { fixturesDir } from "../testUtil";
 
 const options: Options = { stdout: "ignore" };
+const optionsOn: Options = { cwd: path.join(fixturesDir, "cmd") };
+const cmdCountdownFast = "cmd /q /c countdownFast.bat";
 
 describe("cmd", () => {
   it("$ time", () => {
     const res = $("time /t", options);
-    console.log(res);
     assert.ok(/\d{2}:\d{2}/.test(res));
   });
 
@@ -15,7 +19,7 @@ describe("cmd", () => {
     assert.ok(/hello there/.test(res));
   });
 
-  it("$ async", async () => {
+  it("$$ async", async () => {
     const res = await $$("echo hello there", options);
     assert.ok(/hello there/.test(res));
   });
@@ -32,5 +36,40 @@ describe("cmd", () => {
     } catch (error) {
       assert.ok(error instanceof Error);
     }
+  });
+
+  it("$on", async () => {
+    let count = 0;
+    await $on(cmdCountdownFast, optionsOn)
+      .on(/even/, () => {
+        count += 1;
+      })
+      .run();
+    assert.equal(count, 2);
+  });
+
+  it("$on e.deregister()", async () => {
+    let count = 0;
+    await $on(cmdCountdownFast, optionsOn)
+      .on(/even/, (e) => {
+        count += 1;
+        e.deregister();
+      })
+      .run();
+    assert.equal(count, 1);
+  });
+
+  it("$on e.on()", async () => {
+    let count = 0;
+    await $on(cmdCountdownFast, optionsOn)
+      .on(/even/, (e) => {
+        count += 1;
+        e.on(/DONE/, () => {
+          count += 1;
+        });
+      })
+      .run();
+    // Each /even/ adds its own /DONE/: 2*2
+    assert.equal(count, 4);
   });
 });

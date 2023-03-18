@@ -3,7 +3,7 @@ import path from "path";
 import { grep, grepStr } from "../../src";
 import { fixturesDir } from "../testUtil";
 
-const file = path.join(fixturesDir, "a");
+const file = path.join(fixturesDir, "list", "a");
 
 describe("grep", () => {
   it("grep()", () => {

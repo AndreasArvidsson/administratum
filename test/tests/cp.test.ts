@@ -4,10 +4,9 @@ import os from "os";
 import path from "path";
 import { v4 as uuidv4 } from "uuid";
 import { cp } from "../../src";
-
 import { fixturesDir } from "../testUtil";
 
-const source = path.join(fixturesDir, "a");
+const source = path.join(fixturesDir, "list", "a");
 
 describe("cp()", () => {
   it("file", () => {
