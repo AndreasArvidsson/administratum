@@ -1,4 +1,5 @@
-import { $, $$, cmdOn, Options } from "../../src";
+import { $, $$, cmdOn } from "../../src";
+import { Options } from "../../src/cmd/args";
 
 (async () => {
   const cmd = "cmd /q /c countdown.bat";
