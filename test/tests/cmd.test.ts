@@ -72,4 +72,16 @@ describe("cmd", () => {
     // Each /even/ adds its own /DONE/: 2*2
     assert.equal(count, 4);
   });
+
+  it("$on e.kill()", async () => {
+    try {
+      await $on(cmdCountdownFast, optionsOn)
+        .on(/even/, (e) => e.kill())
+        .run();
+      assert.fail();
+    } catch (error) {
+      assert.ok(error instanceof Error);
+      assert.ok(error.message.includes("SIGTERM"));
+    }
+  });
 });

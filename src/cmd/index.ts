@@ -81,7 +81,9 @@ function cmdAsyncOn(
   };
 }
 
-export { cmdSync as $, cmdAsync as $$, cmdAsyncOn as $on };
+export { cmdSync as $ };
+export { cmdAsync as $$ };
+export { cmdAsyncOn as $on };
 
 function cmdAsyncInternal(
   cmdOrFile: string,
@@ -117,6 +119,7 @@ function cmdAsyncInternal(
       stdoutBuffer,
       bufferIndex: 0,
       bufferLength: 0,
+      kill: () => child.kill(),
     };
 
     if (stdinStream != null) {
