@@ -3,9 +3,9 @@ import onExit from "signal-exit";
 import { getStream, Options, parseCommand, parseOptions } from "./args";
 import { createError } from "./error";
 import {
-  OnEventBuilder,
   EventListener,
   EventListenerState,
+  OnEventBuilder,
   OnEventCallback,
   runEventListeners,
 } from "./eventListeners";
@@ -120,6 +120,7 @@ function cmdAsyncInternal(
       bufferIndex: 0,
       bufferLength: 0,
       kill: () => child.kill(),
+      write: (data: string) => child.stdin.write(data),
     };
 
     if (stdinStream != null) {
@@ -164,7 +165,7 @@ function cmdAsyncInternal(
         );
       }
 
-      resolve(stdoutBuffer.join(""));
+      resolve(stdoutBuffer.join("").trimEnd());
     });
 
     child.on("error", (error) => {

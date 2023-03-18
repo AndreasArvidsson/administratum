@@ -1,0 +1,3 @@
+set /p DUMMY=Hit ENTER to continue...
+
+echo DONE

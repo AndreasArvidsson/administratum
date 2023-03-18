@@ -84,4 +84,11 @@ describe("cmd", () => {
       assert.ok(error.message.includes("SIGTERM"));
     }
   });
+
+  it("$on e.write()", async () => {
+    const res = await $on("cmd /q /c prompt.bat", optionsOn)
+      .on(/ENTER/, (e) => e.write("\n"))
+      .run();
+    assert.equal(res, "Hit ENTER to continue...DONE");
+  });
 });

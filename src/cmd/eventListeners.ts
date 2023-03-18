@@ -2,8 +2,9 @@ interface OnEvent {
   match: RegExpExecArray;
   deregister: () => void;
   on: (regex: RegExp, callback: OnEventCallback) => void;
+  write: (data: string) => void;
   kill: () => void;
-  // TODO: write, result
+  // TODO: result
 }
 
 export type OnEventCallback = (event: OnEvent) => void;
@@ -23,6 +24,7 @@ export interface EventListenerState {
   stdoutBuffer: string[];
   bufferIndex: number;
   bufferLength: number;
+  write: (data: string) => void;
   kill: () => void;
 }
 
@@ -38,6 +40,7 @@ export function runEventListeners(state: EventListenerState) {
     if (match) {
       listener.callback({
         match,
+        write: state.write,
         kill: state.kill,
         deregister: () => {
           toRemove.push(i);
