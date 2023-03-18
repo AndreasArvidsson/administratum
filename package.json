@@ -20,6 +20,7 @@
     "dependencies": {
         "extract-zip": "^2.0.1",
         "glob": "^9.3.0",
+        "signal-exit": "^3.0.7",
         "tar": "^6.1.13",
         "uuid": "^9.0.0"
     },
@@ -28,6 +29,7 @@
         "@types/glob": "^8.1.0",
         "@types/mocha": "^10.0.1",
         "@types/node": "^18.15.0",
+        "@types/signal-exit": "^3.0.1",
         "@types/tar": "^6.1.4",
         "@types/uuid": "^9.0.1",
         "@typescript-eslint/eslint-plugin": "^5.55.0",
