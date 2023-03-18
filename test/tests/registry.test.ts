@@ -7,7 +7,7 @@ import {
   regHasValue,
   regQueryKey,
   regQueryValue,
-} from "../../src/registry";
+} from "../../src";
 
 const keyName =
   "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\AdministratumTest";

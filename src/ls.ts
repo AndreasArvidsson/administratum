@@ -1,4 +1,4 @@
-import { Path } from ".";
+import { Path, range } from ".";
 
 interface Options {
   long?: boolean;
@@ -93,12 +93,4 @@ function getPermission(char: string): string {
   const w = (num & 2) !== 0;
   const x = (num & 1) !== 0;
   return `${r ? "r" : ""}${w ? "w" : ""}${x ? "x" : "-"}`;
-}
-
-function range(from: number, end: number, step = 1): number[] {
-  const res: number[] = [];
-  for (let i = from; i < end; i += step) {
-    res.push(i);
-  }
-  return res;
 }
