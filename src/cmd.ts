@@ -1,7 +1,7 @@
 import childProcess from "child_process";
+import onExit from "signal-exit";
 import stream from "stream";
 import { Path } from ".";
-import onExit from "signal-exit";
 
 type Pipe = "stdin" | "stdout" | "stderr" | "ignore" | stream.Writable;
 
@@ -21,7 +21,7 @@ interface ErrorParameters {
   stdout: string;
   stderr: string;
   exitCode?: number | null;
-  signal?: NodeJS.Signals | string | null;
+  signal?: NodeJS.Signals | null;
   error?: Error | undefined;
 }
 
