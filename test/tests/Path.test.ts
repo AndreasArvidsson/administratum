@@ -2,7 +2,7 @@ import assert from "assert";
 import { Stats } from "fs";
 import os from "os";
 import pathlib from "path";
-import { getCtime, Path } from "../..";
+import { getCtime, Path } from "../../src";
 import { fixturesDir } from "../testUtil";
 
 const dir = new Path(fixturesDir);

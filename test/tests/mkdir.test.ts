@@ -2,7 +2,7 @@ import assert from "assert";
 import os from "os";
 import path from "path";
 import { v4 as uuidv4 } from "uuid";
-import { mkdir, mkdirs } from "../..";
+import { mkdir, mkdirs } from "../../src";
 
 describe("mkdir", () => {
   it("mkdir()", () => {

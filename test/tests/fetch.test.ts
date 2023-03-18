@@ -1,9 +1,9 @@
 import assert from "assert";
-import path from "path";
 import fs from "fs";
 import os from "os";
+import path from "path";
 import { v4 as uuidv4 } from "uuid";
-import { fetch } from "../..";
+import { fetch } from "../../src";
 
 const url =
   "https://raw.githubusercontent.com/AndreasArvidsson/administratum/main/images/Imperio_adeptus_administratum_adepto.webp";

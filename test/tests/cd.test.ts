@@ -1,7 +1,7 @@
 import assert from "assert";
 import os from "os";
 import path from "path";
-import { cd } from "../..";
+import { cd } from "../../src";
 
 describe("cd", () => {
   it("cd()", () => {

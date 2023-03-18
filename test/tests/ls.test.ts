@@ -1,5 +1,5 @@
 import assert from "assert";
-import { ls } from "../..";
+import { ls } from "../../src";
 import { fixturesDir } from "../testUtil";
 
 describe("ls", () => {

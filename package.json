@@ -4,7 +4,6 @@
     "version": "0.0.1",
     "publisher": "AndreasArvidsson",
     "license": "MIT",
-    "main": "./src/index.ts",
     "repository": {
         "type": "git",
         "url": "https://github.com/AndreasArvidsson/administratum"

@@ -1,7 +1,7 @@
 import childProcess from "child_process";
 import onExit from "signal-exit";
 import stream from "stream";
-import { Path } from ".";
+import { Path } from "..";
 
 type Pipe = "stdin" | "stdout" | "stderr" | "ignore" | stream.Writable;
 
@@ -18,11 +18,13 @@ export interface Options {
 type ParsedOptions = Required<Options> & { cwd: string };
 
 interface ErrorParameters {
-  stdout: string;
-  stderr: string;
+  file: string;
+  args: string[];
+  error?: Error | undefined;
   exitCode?: number | null;
   signal?: NodeJS.Signals | null;
-  error?: Error | undefined;
+  stdout: string;
+  stderr: string;
 }
 
 function cmdSync(cmd: string, options?: Options): string;
@@ -42,7 +44,7 @@ function cmdSync(
   const stdoutStream = getStream(stdout);
   const stderrStream = getStream(stderr);
 
-  const child = childProcess.spawnSync(file, args, {
+  const result = childProcess.spawnSync(file, args, {
     shell,
     cwd,
     encoding,
@@ -50,19 +52,19 @@ function cmdSync(
     stdio: [stdinStream, stdoutStream, stderrStream],
   });
 
-  const error = createError(file, args, {
-    exitCode: child.status,
-    signal: child.signal,
-    error: child.error,
-    stdout: child.stdout,
-    stderr: child.stderr,
-  });
-
-  if (error != null) {
-    throw error;
+  if (result.error != null || result.status !== 0 || result.signal != null) {
+    throw createError({
+      file,
+      args,
+      error: result.error,
+      exitCode: result.status,
+      signal: result.signal,
+      stdout: result.stdout,
+      stderr: result.stderr,
+    });
   }
 
-  return child.stdout;
+  return result.stdout;
 }
 
 function cmdAsync(cmd: string, options?: Options): Promise<string>;
@@ -141,15 +143,17 @@ function cmdAsyncInternal(
     child.on("exit", (exitCode, signal) => {
       removeExitHandler();
 
-      const error = createError(file, args, {
-        exitCode,
-        signal,
-        stdout: stderrBuffer.join(""),
-        stderr: stdoutBuffer.join(""),
-      });
-
-      if (error != null) {
-        reject(error);
+      if (exitCode !== 0 || signal != null) {
+        reject(
+          createError({
+            file,
+            args,
+            exitCode,
+            signal,
+            stdout: stderrBuffer.join(""),
+            stderr: stdoutBuffer.join(""),
+          })
+        );
       }
 
       resolve(stdoutBuffer.join(""));
@@ -159,8 +163,10 @@ function cmdAsyncInternal(
       removeExitHandler();
 
       reject(
-        createError(file, args, {
-          error: error,
+        createError({
+          file,
+          args,
+          error,
           stderr: stdoutBuffer.join(""),
           stdout: stderrBuffer.join(""),
         })
@@ -194,25 +200,16 @@ function parseOptions(
   };
 }
 
-function createError(
-  file: string,
-  args: string[],
-  child: ErrorParameters
-): Error | undefined {
-  const reason = getErrorReason(child);
-
-  if (!reason) {
-    return undefined;
-  }
-
-  const command = ["$", file, ...args].join(" ");
+function createError(params: ErrorParameters): Error {
+  const reason = getErrorReason(params);
+  const command = ["$", params.file, ...params.args].join(" ");
 
   const text = [
     reason,
     command,
-    child.error?.message,
-    child.stderr,
-    child.stdout,
+    params.error?.message,
+    params.stderr,
+    params.stdout,
   ]
     .filter(Boolean)
     .join("\n");
@@ -230,7 +227,7 @@ function getErrorReason(child: ErrorParameters): string | undefined {
   if (child.exitCode !== 0) {
     return `Command failed with exit code ${child.exitCode}`;
   }
-  return undefined;
+  return "Command failed";
 }
 
 function getStream(

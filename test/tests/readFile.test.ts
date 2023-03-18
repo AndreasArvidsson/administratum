@@ -1,7 +1,7 @@
 import assert from "assert";
 import fs from "fs";
 import path from "path";
-import { readFile } from "../..";
+import { readFile } from "../../src";
 import { fixturesDir } from "../testUtil";
 
 describe("readFile", () => {

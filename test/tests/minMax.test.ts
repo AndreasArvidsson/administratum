@@ -1,5 +1,5 @@
 import assert from "assert";
-import { max, min } from "../..";
+import { max, min } from "../../src";
 
 const numbers = [5, 1, 9, 2, 7];
 const objects = [

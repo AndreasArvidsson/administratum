@@ -1,6 +1,6 @@
 import assert from "assert";
 import fs from "fs";
-import { tempFile } from "../..";
+import { tempFile } from "../../src";
 
 describe("tempFile", () => {
   it("tempFile()", () => {

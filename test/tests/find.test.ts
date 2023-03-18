@@ -1,6 +1,6 @@
 import assert from "assert";
 import path from "path";
-import { find, findStr } from "../..";
+import { find, findStr } from "../../src";
 import { fixturesDir } from "../testUtil";
 
 const dir = "fixtures";

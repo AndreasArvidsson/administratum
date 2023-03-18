@@ -1,6 +1,6 @@
 import assert from "assert";
 import path from "path";
-import { grep, grepStr } from "../..";
+import { grep, grepStr } from "../../src";
 import { fixturesDir } from "../testUtil";
 
 const file = path.join(fixturesDir, "a");

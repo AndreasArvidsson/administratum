@@ -1,5 +1,5 @@
 import assert from "assert";
-import { sleep, after, countdown } from "../..";
+import { after, countdown, sleep } from "../../src";
 
 const t = 25;
 const ts = `${t}ms`;

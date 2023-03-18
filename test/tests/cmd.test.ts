@@ -1,5 +1,5 @@
 import assert from "assert";
-import { $, $$, Options } from "../..";
+import { $, $$, Options } from "../../src/cmd";
 
 const options: Options = { stdout: "ignore" };
 

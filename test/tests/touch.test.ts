@@ -1,5 +1,5 @@
 import assert from "assert";
-import { sleep, tempFile, touch } from "../..";
+import { sleep, tempFile, touch } from "../../src";
 
 describe("touch", () => {
   it("touch()", async () => {
