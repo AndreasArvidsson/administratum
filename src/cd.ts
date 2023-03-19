@@ -1,10 +1,13 @@
 import { Path } from ".";
 
 export const cd = (dir?: Path | string): Path => {
-  if (!dir) {
+  if (dir == null) {
     dir = Path.home();
   } else if (dir === "-") {
     dir = Path.oldPWD();
+    if (dir == null) {
+      throw Error("Old PWD is undefined");
+    }
   } else {
     dir = new Path(dir);
   }

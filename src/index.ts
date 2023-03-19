@@ -1,4 +1,3 @@
-export * from "./Administratum";
 export * from "./cd";
 export * from "./cmd";
 export * from "./cp";

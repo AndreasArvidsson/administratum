@@ -4,17 +4,19 @@
     "version": "0.0.1",
     "publisher": "AndreasArvidsson",
     "license": "MIT",
+    "main": "out/index.js",
+    "files": [
+        "out/index.js"
+    ],
     "repository": {
         "type": "git",
         "url": "https://github.com/AndreasArvidsson/administratum"
     },
     "scripts": {
-        "start": "tsx test/runWorkflows.ts",
         "test": "tsx test/runTests.ts",
         "example": "tsx test/example.ts",
-        "build": "tsc -p ./",
-        "lint": "eslint . --ext .ts,.tsx",
-        "watch": "tsc -watch -p ./"
+        "build": "tsc -p . && node esbuild.mjs",
+        "lint": "eslint . --ext .ts"
     },
     "dependencies": {
         "extract-zip": "^2.0.1",
@@ -33,8 +35,10 @@
         "@types/uuid": "^9.0.1",
         "@typescript-eslint/eslint-plugin": "^5.55.0",
         "@typescript-eslint/parser": "^5.55.0",
+        "esbuild": "^0.17.12",
         "eslint": "^8.36.0",
         "mocha": "^10.2.0",
+        "tsx": "^3.12.5",
         "typescript": "^4.9.5"
     }
 }
