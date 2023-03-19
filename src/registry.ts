@@ -11,7 +11,7 @@ const dataTypes = [
 ] as const;
 
 const dataTypesPattern = `(${dataTypes.join("|")})`;
-const valueRe = new RegExp(`(.+)${dataTypesPattern}\\s+(.+)`);
+const valueRe = new RegExp(`(\\(?.+\\)?)${dataTypesPattern}\\s*(.*)`);
 
 const options: ExecSyncOptionsWithStringEncoding = {
   encoding: "utf-8",
@@ -25,15 +25,37 @@ interface RegValue {
   data: string;
 }
 
-export const regQueryKey = (keyName: string) => {
-  const res = childProcess.execSync(`REG QUERY "${keyName}"`, options);
-  const lines = res
-    .trim()
-    .split("\n")
-    .map((l) => l.trim());
+interface RegKey {
+  name: string;
+  values: RegValue[];
+  children: string[];
+}
+
+export const regQueryKey = (keyName: string): RegKey | undefined => {
+  let res;
+  try {
+    res = childProcess.execSync(`REG QUERY "${keyName}"`, options).trim();
+  } catch (e) {
+    if (exceptionIsMissingKeyOrValue(e)) {
+      return undefined;
+    }
+    throw e;
+  }
+
+  // The key exists but it has no value or children
+  if (!res) {
+    return {
+      name: keyName,
+      values: [],
+      children: [],
+    };
+  }
+
+  const lines = res.split("\n").map((l) => l.trim());
   const separatorIndex = lines.indexOf("");
-  const valueLines = lines.slice(0, separatorIndex);
-  const childLines = lines.slice(separatorIndex + 1);
+  const valueLines =
+    separatorIndex > -1 ? lines.slice(0, separatorIndex) : lines;
+  const childLines = separatorIndex > -1 ? lines.slice(separatorIndex + 1) : [];
 
   return {
     name: keyName,
@@ -42,11 +64,27 @@ export const regQueryKey = (keyName: string) => {
   };
 };
 
-export const regQueryValue = (keyName: string, valueName: string) => {
-  const res = childProcess.execSync(
-    `REG QUERY "${keyName}" /v "${valueName}"`,
-    options
-  );
+export const regHasKey = (keyName: string) => {
+  return regQueryKey(keyName) != null;
+};
+
+export const regQueryValue = (
+  keyName: string,
+  valueName: string
+): RegValue | undefined => {
+  let res;
+  try {
+    res = childProcess.execSync(
+      `REG QUERY "${keyName}" /v "${valueName}"`,
+      options
+    );
+  } catch (e) {
+    if (exceptionIsMissingKeyOrValue(e)) {
+      return undefined;
+    }
+    throw e;
+  }
+
   const lines = res
     .trim()
     .split("\n")
@@ -61,12 +99,7 @@ export const regQueryValue = (keyName: string, valueName: string) => {
 };
 
 export const regHasValue = (keyName: string, valueName: string) => {
-  try {
-    regQueryValue(keyName, valueName);
-    return true;
-  } catch (e) {
-    return false;
-  }
+  return regQueryValue(keyName, valueName) != null;
 };
 
 export const regAddKey = (keyName: string) => {
@@ -109,6 +142,9 @@ function getValuesFromKeyLines(keyName: string, lines: string[]): RegValue[] {
   for (let i = 1; i < lines.length; ++i) {
     const match = lines[i].match(valueRe);
     if (match?.length !== 4) {
+      console.log(lines[i]);
+      console.log(valueRe);
+      console.log(match);
       throw Error(`Unexpected registry query return '${lines.join("\n")}'`);
     }
     values.push({
@@ -119,4 +155,13 @@ function getValuesFromKeyLines(keyName: string, lines: string[]): RegValue[] {
   }
 
   return values.sort((a, b) => a.name.localeCompare(b.name));
+}
+
+function exceptionIsMissingKeyOrValue(ex: unknown) {
+  return (
+    ex instanceof Error &&
+    ex.message.includes(
+      "ERROR: The system was unable to find the specified registry key or value."
+    )
+  );
 }
