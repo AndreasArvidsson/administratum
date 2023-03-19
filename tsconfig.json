@@ -8,12 +8,12 @@
         "moduleResolution": "node",
         "rootDir": "src",
         "declarationDir": "dist/types",
-        "strict": true,
         "esModuleInterop": true,
-        "forceConsistentCasingInFileNames": true,
         "emitDeclarationOnly": true,
         "declaration": true,
         "noEmitOnError": true,
+        "strict": true,
+        "forceConsistentCasingInFileNames": true,
     },
     "include": [
         "src"
