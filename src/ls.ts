@@ -1,13 +1,20 @@
 import { Path, range } from ".";
+import { Cross, getOptions } from "./util/Arguments";
 
-interface Options {
-  long?: boolean;
-  all?: boolean;
-  one?: boolean;
-}
+const optionsMap = {
+  a: "all",
+  l: "long",
+  ["1"]: "one",
+} as const;
+
+type Flag = keyof typeof optionsMap;
+type LongName = typeof optionsMap[Flag];
+type OptionsObject = Partial<Record<LongName, boolean>>;
+type Options = OptionsObject | Cross<Flag, 3>;
 
 export const ls = (path: Path | string, options: Options = {}): string => {
   path = new Path(path);
+  const opts = getOptions(options, optionsMap);
 
   if (!path.exists()) {
     throw Error(`No such file or directory: '${path}'`);
@@ -18,10 +25,10 @@ export const ls = (path: Path | string, options: Options = {}): string => {
   // TODO: Proper column spacing
 
   function addFile(path: Path) {
-    if (!options.all && path.name[0] === ".") {
+    if (!opts.all && path.name[0] === ".") {
       return;
     }
-    if (options.long) {
+    if (opts.long) {
       result.push(getLongLine(path));
     } else {
       result.push(path.name);
@@ -34,7 +41,7 @@ export const ls = (path: Path | string, options: Options = {}): string => {
     addFile(path);
   }
 
-  const res = result.join(options.long || options.one ? "\n" : " ");
+  const res = result.join(opts.long || opts.one ? "\n" : " ");
   // TODO: total should be size!
   // return options.long ? `total ${result.length}\n${res}` : res;
   return res;
