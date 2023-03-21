@@ -1,4 +1,4 @@
-import assert from "assert";
+import assert from "node:assert";
 import { max, min } from "../../src";
 
 const numbers = [5, 1, 9, 2, 7];

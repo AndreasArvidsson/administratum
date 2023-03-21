@@ -1,4 +1,4 @@
-import path from "path";
+import path from "node:path";
 import { $, $$, $on } from "../src";
 import { Options } from "../src/cmd/args";
 import { fixturesDir } from "./testUtil";

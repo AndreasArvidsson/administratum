@@ -1,7 +1,7 @@
-import fs, { Stats } from "fs";
 import glob from "glob";
-import os from "os";
-import pathlib from "path";
+import fs, { Stats } from "node:fs";
+import os from "node:os";
+import pathlib from "node:path";
 
 export class Path {
   readonly path: string;

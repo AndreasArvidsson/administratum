@@ -1,4 +1,6 @@
-import childProcess, { ExecSyncOptionsWithStringEncoding } from "child_process";
+import childProcess, {
+  ExecSyncOptionsWithStringEncoding,
+} from "node:child_process";
 
 const dataTypes = [
   "REG_SZ",

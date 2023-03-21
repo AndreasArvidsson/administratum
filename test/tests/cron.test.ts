@@ -1,4 +1,4 @@
-import assert from "assert";
+import assert from "node:assert";
 import { after, countdown, sleep } from "../../src";
 
 const t = 25;

@@ -1,6 +1,6 @@
-import assert from "assert";
-import os from "os";
-import path from "path";
+import assert from "node:assert";
+import os from "node:os";
+import path from "node:path";
 import { cd } from "../../src";
 
 describe("cd", () => {

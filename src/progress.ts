@@ -1,4 +1,4 @@
-import readline from "readline";
+import readline from "node:readline";
 
 export const progressPromises = (
   title: string,

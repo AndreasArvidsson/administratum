@@ -1,4 +1,4 @@
-import fs from "fs";
+import fs from "node:fs";
 import { Path } from ".";
 
 export const mkdir = (path: Path | string): Path => {

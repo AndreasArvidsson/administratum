@@ -1,7 +1,7 @@
-import assert from "assert";
-import { Stats } from "fs";
-import os from "os";
-import pathlib from "path";
+import assert from "node:assert";
+import { Stats } from "node:fs";
+import os from "node:os";
+import pathlib from "node:path";
 import { getCtime, Path } from "../../src";
 import { fixturesDir } from "../testUtil";
 

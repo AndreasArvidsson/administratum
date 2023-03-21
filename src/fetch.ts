@@ -1,7 +1,7 @@
-import fs from "fs";
-import http from "http";
-import https from "https";
-import urllib from "url";
+import fs from "node:fs";
+import http from "node:http";
+import https from "node:https";
+import urllib from "node:url";
 import { Path } from ".";
 
 interface Response {

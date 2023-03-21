@@ -1,6 +1,6 @@
+import fs from "node:fs";
+import readline from "node:readline";
 import { Path } from ".";
-import fs from "fs";
-import readline from "readline";
 
 export const readFile = (file: Path | string): string => {
   file = new Path(file);

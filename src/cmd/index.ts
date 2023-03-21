@@ -1,4 +1,4 @@
-import childProcess from "child_process";
+import childProcess from "node:child_process";
 import onExit from "signal-exit";
 import { getStream, Options, parseCommand, parseOptions } from "./args";
 import { createError } from "./error";

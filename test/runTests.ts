@@ -1,6 +1,6 @@
 import { globSync } from "glob";
 import Mocha from "mocha";
-import path from "path";
+import path from "node:path";
 
 const mocha = new Mocha({
   color: true,
