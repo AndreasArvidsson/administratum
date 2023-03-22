@@ -101,6 +101,11 @@ describe("Path", () => {
     assert.equal(dir.glob("b").length, 1);
   });
 
+  it("sort()", () => {
+    const actual = [new Path("b"), new Path("a")].sort().map((p) => p.name);
+    assert.deepEqual(actual, ["a", "b"]);
+  });
+
   it("getCtime()", () => {
     assert.ok(getCtime(file) instanceof Date);
   });
