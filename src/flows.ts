@@ -33,12 +33,14 @@ interface FlowDesc {
 const flows: FlowDesc[] = [];
 
 const runFlows = async (options: Options): Promise<void> => {
-  const t1 = Date.now();
-  await loadFlowFiles(options.files);
+  const files = options.files.map((f) => new Path(f));
+  await loadFlowFiles(files);
   await runFlowFunctions();
   const hasOnly = flows.some((w) => w.only || w.tasks.some((t) => t.only));
+  logFiles(files);
   logFlowsAndTasks(hasOnly);
   await promptContinue();
+  const t1 = Date.now();
   await runTaskFunctions(hasOnly);
   const t2 = Date.now();
   const duration = formatDuration(t1, t2);
@@ -57,9 +59,9 @@ flow.skip = (name: string, fn: FlowFn) => {
   flows.push({ name, fn, tasks: [], skip: true });
 };
 
-async function loadFlowFiles(files: Path[] | string[]) {
+async function loadFlowFiles(files: Path[]) {
   for (const f of files) {
-    await require(new Path(f).path);
+    await require(f.path);
   }
 }
 
@@ -68,6 +70,15 @@ async function runFlowFunctions(): Promise<void> {
     const taskFn = getTaskFunction(flow);
     await Promise.resolve(flow.fn(taskFn));
   }
+}
+
+function logFiles(files: Path[]) {
+  console.log(`Files: ${files.length}`);
+  const cwd = Path.cwd();
+  for (const f of files) {
+    console.log(cwd.relative(f));
+  }
+  console.log("");
 }
 
 function logFlowsAndTasks(hasOnly: boolean) {
