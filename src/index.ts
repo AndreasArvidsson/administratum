@@ -5,6 +5,7 @@ export * from "./cron";
 export * from "./extract";
 export * from "./fetch";
 export * from "./find";
+export * from "./flows";
 export * from "./grep";
 export * from "./ls";
 export * from "./minMax";

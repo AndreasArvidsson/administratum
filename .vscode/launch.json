@@ -6,20 +6,6 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Run workflows",
-            "type": "node",
-            "request": "launch",
-            "runtimeExecutable": "npm",
-            "runtimeArgs": [
-                "run",
-                "start"
-            ],
-            "resolveSourceMapLocations": [
-                "${workspaceFolder}/**",
-                "!**/node_modules/**"
-            ]
-        },
-        {
             "name": "Run tests",
             "type": "node",
             "request": "launch",
@@ -34,7 +20,21 @@
             ]
         },
         {
-            "name": "Run examples",
+            "name": "Run flows example",
+            "type": "node",
+            "request": "launch",
+            "runtimeExecutable": "npm",
+            "runtimeArgs": [
+                "run",
+                "example:flows"
+            ],
+            "resolveSourceMapLocations": [
+                "${workspaceFolder}/**",
+                "!**/node_modules/**"
+            ]
+        },
+        {
+            "name": "Run example",
             "type": "node",
             "request": "launch",
             "runtimeExecutable": "npm",
