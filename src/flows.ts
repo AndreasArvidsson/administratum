@@ -33,12 +33,16 @@ interface FlowDesc {
 const flows: FlowDesc[] = [];
 
 const runFlows = async (options: Options): Promise<void> => {
+  const t1 = Date.now();
   await loadFlowFiles(options.files);
   await runFlowFunctions();
   const hasOnly = flows.some((w) => w.only || w.tasks.some((t) => t.only));
   logFlowsAndTasks(hasOnly);
-  // await promptContinue();
+  await promptContinue();
   await runTaskFunctions(hasOnly);
+  const t2 = Date.now();
+  const duration = formatDuration(t1, t2);
+  console.log(`\n[ All flows completed @ ${duration} ]`);
 };
 
 const flow = (name: string, fn: FlowFn) => {
@@ -73,20 +77,17 @@ function logFlowsAndTasks(hasOnly: boolean) {
   let numTasks = 0;
 
   for (const flow of flows) {
-    const flowLoglines: string[] = [];
-    let runFlow = false;
+    const runFlow = shouldRun(hasOnly, flow);
+    runningFlows += runFlow ? 1 : 0;
+    loglines.push(`${runFlow ? "  " : "- "}${flow.name}`);
 
     for (const task of flow.tasks) {
       const runTask = shouldRun(hasOnly, flow, task);
-      runFlow = runFlow || runTask;
       numTasks++;
       runningTasks += runTask ? 1 : 0;
-      flowLoglines.push(`    ${runTask ? "  " : "- "}${task.name}`);
+      loglines.push(`    ${runTask ? "  " : "- "}${task.name}`);
     }
 
-    runningFlows += runFlow ? 1 : 0;
-    loglines.push(`${runFlow ? "  " : "- "}${flow.name}`);
-    loglines.push(...flowLoglines);
     loglines.push("");
   }
 
@@ -105,12 +106,43 @@ function logFlowsAndTasks(hasOnly: boolean) {
 }
 
 async function runTaskFunctions(hasOnly: boolean) {
-  for (const flow of flows) {
-    for (const task of flow.tasks) {
-      if (shouldRun(hasOnly, flow, task)) {
-        await Promise.resolve(task.fn());
-      }
+  let previousFlowRan = false;
+
+  for (let i = 0; i < flows.length; ++i) {
+    const flow = flows[i];
+
+    if (!shouldRun(hasOnly, flow)) {
+      const prefix = previousFlowRan ? "\n" : "";
+      previousFlowRan = false;
+      console.log(`${prefix}========== ${flow.name} [SKIPPED] ==========`);
+      continue;
     }
+
+    const prefix = i > 0 ? "\n" : "";
+    previousFlowRan = true;
+    console.log(`${prefix}========== ${flow.name} [Start] ==========`);
+    const t1 = Date.now();
+    let previousTaskRan = false;
+
+    for (let j = 0; j < flow.tasks.length; ++j) {
+      const task = flow.tasks[j];
+
+      if (!shouldRun(hasOnly, flow, task)) {
+        const prefix = previousTaskRan ? "\n" : "";
+        console.log(`${prefix}- ${task.name} [SKIPPED]`);
+        previousTaskRan = false;
+        continue;
+      }
+
+      const prefix = j > 0 ? "\n" : "";
+      console.log(`${prefix}- ${task.name}`);
+      previousTaskRan = true;
+      await Promise.resolve(task.fn());
+    }
+
+    const t2 = Date.now();
+    const duration = formatDuration(t1, t2);
+    console.log(`========== ${flow.name} [Completed @ ${duration}] ==========`);
   }
 }
 
@@ -127,8 +159,16 @@ function getTaskFunction(flow: FlowDesc) {
   return task;
 }
 
-function shouldRun(hasOnly: boolean, flow: FlowDesc, task: TaskDesc): boolean {
+function shouldRun(hasOnly: boolean, flow: FlowDesc, task?: TaskDesc): boolean {
+  if (!task) {
+    return flow.tasks.some((t) => shouldRun(hasOnly, flow, t));
+  }
   return !flow.skip && !task.skip && (!hasOnly || !!flow.only || !!task.only);
+}
+
+function formatDuration(t1: number, t2: number): string {
+  const delta = t2 - t1;
+  return delta < 1000 ? `${delta}ms` : `${delta / 1000}s`;
 }
 
 export { runFlows, flow };
