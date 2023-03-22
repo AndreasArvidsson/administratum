@@ -73,7 +73,7 @@ function logFlowsAndTasks(hasOnly: boolean) {
   let numTasks = 0;
 
   for (const flow of flows) {
-    const taskLoglines: string[] = [];
+    const flowLoglines: string[] = [];
     let runFlow = false;
 
     for (const task of flow.tasks) {
@@ -81,12 +81,12 @@ function logFlowsAndTasks(hasOnly: boolean) {
       runFlow = runFlow || runTask;
       numTasks++;
       runningTasks += runTask ? 1 : 0;
-      taskLoglines.push(`    ${runTask ? "  " : "- "}${task.name}`);
+      flowLoglines.push(`    ${runTask ? "  " : "- "}${task.name}`);
     }
 
     runningFlows += runFlow ? 1 : 0;
     loglines.push(`${runFlow ? "  " : "- "}${flow.name}`);
-    loglines.push(...taskLoglines);
+    loglines.push(...flowLoglines);
     loglines.push("");
   }
 
