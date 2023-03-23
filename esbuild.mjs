@@ -7,5 +7,4 @@ await build({
   packages: "external",
   bundle: true,
   minify: true,
-  sourcemap: true,
 });

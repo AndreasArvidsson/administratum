@@ -4,9 +4,9 @@
     "version": "0.0.1",
     "publisher": "AndreasArvidsson",
     "license": "MIT",
-    "main": "out/index.js",
+    "main": "dist/index.js",
     "files": [
-        "out/index.js"
+        "dist/*"
     ],
     "repository": {
         "type": "git",
