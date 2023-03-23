@@ -1,5 +1,5 @@
 import { Path, range } from ".";
-import { Cross, getOptions } from "./util/Arguments";
+import { OptionsType, getOptions } from "./util/Arguments";
 
 const optionsMap = {
   a: "all",
@@ -7,10 +7,7 @@ const optionsMap = {
   ["1"]: "one",
 } as const;
 
-type Flag = keyof typeof optionsMap;
-type LongName = typeof optionsMap[Flag];
-type OptionsObject = Partial<Record<LongName, boolean>>;
-type Options = OptionsObject | Cross<Flag, 3>;
+type Options = OptionsType<typeof optionsMap, 3>;
 
 export const ls = (path: Path | string, options: Options = {}): string => {
   path = new Path(path);

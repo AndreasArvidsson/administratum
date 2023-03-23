@@ -1,10 +1,13 @@
 import fs from "node:fs";
 import { Path } from ".";
+import { getOptions, OptionsType } from "./util/Arguments";
 
-interface Options {
-  recursive?: boolean;
-  force?: boolean;
-}
+const optionsMap = {
+  r: "recursive",
+  f: "force",
+} as const;
+
+type Options = OptionsType<typeof optionsMap, 2>;
 
 export const cp = (
   source: Path | string,
@@ -13,6 +16,7 @@ export const cp = (
 ): Path => {
   source = new Path(source);
   destination = new Path(destination);
+  const opts = getOptions(options, optionsMap);
 
   if (source.equals(destination)) {
     throw Error(`Can't copy to self: '${source}'`);
@@ -23,7 +27,7 @@ export const cp = (
   }
 
   if (source.isDir()) {
-    if (!options.recursive) {
+    if (!opts.recursive) {
       throw Error(`Source is a directory: '${source}'`);
     }
   }
@@ -31,7 +35,7 @@ export const cp = (
   fs.cpSync(source.path, destination.path, {
     errorOnExist: true,
     recursive: true,
-    force: options.force ?? false,
+    force: opts.force ?? false,
   });
 
   return destination;

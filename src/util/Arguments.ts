@@ -4,15 +4,20 @@ type Repeat<S extends string, N extends number> = N extends 0
   ? ""
   : `${S}${Repeat<S, Decrement[N]>}`;
 
-export type Cross<S extends string, N extends number> = N extends 1
-  ? `${Repeat<S, N>}`
-  : `${Repeat<S, N>}` | `${Cross<S, Decrement[N]>}`;
+type KeyOfStr<T> = Extract<keyof T, string>;
+type ValueOf<T> = T[keyof T];
 
-function isString(data: unknown): data is string {
-  return typeof data === "string" || data instanceof String;
-}
+type OptionsObject<LongName extends string> = Partial<
+  Record<LongName, boolean>
+>;
 
-type OptionsObject<T extends string> = Partial<Record<T, boolean>>;
+export type Cross<Flag extends string, N extends number> = N extends 1
+  ? `${Repeat<Flag, N>}`
+  : `${Repeat<Flag, N>}` | `${Cross<Flag, Decrement[N]>}`;
+
+export type OptionsType<Map extends Record<string, string>, N extends number> =
+  | Partial<Record<ValueOf<Map>, boolean>>
+  | Cross<KeyOfStr<Map>, N>;
 
 export function getOptions<Flag extends string, LongName extends string>(
   options: OptionsObject<LongName> | string,
@@ -27,4 +32,8 @@ export function getOptions<Flag extends string, LongName extends string>(
     return res;
   }
   return options;
+}
+
+function isString(data: unknown): data is string {
+  return typeof data === "string" || data instanceof String;
 }
