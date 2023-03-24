@@ -6,7 +6,7 @@ export const touch = (path: Path | string): Path => {
 
   if (path.exists()) {
     if (path.isDir()) {
-      throw Error(`Path is directory: '${path}'`);
+      throw Error(`Path is a directory: '${path}'`);
     }
   }
 

@@ -1,9 +1,12 @@
 import fs from "node:fs";
 import { Path } from ".";
+import { OptionsType, getOptions } from "./util/Arguments";
 
-interface Options {
-  force?: boolean;
-}
+const optionsMap = {
+  f: "force",
+} as const;
+
+type Options = OptionsType<typeof optionsMap, 1>;
 
 export const mv = (
   source: Path | string,
@@ -12,6 +15,7 @@ export const mv = (
 ): Path => {
   source = new Path(source);
   destination = new Path(destination);
+  const opts = getOptions(options, optionsMap);
 
   if (source.equals(destination)) {
     throw Error(`Can't move to self: '${source}'`);
@@ -23,7 +27,7 @@ export const mv = (
 
   if (destination.exists()) {
     if (destination.isFile()) {
-      if (!options.force) {
+      if (!opts.force) {
         throw Error(`Destination file already exists: '${destination}'`);
       }
     } else {

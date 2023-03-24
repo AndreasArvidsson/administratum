@@ -7,24 +7,32 @@ type Repeat<S extends string, N extends number> = N extends 0
 type KeyOfStr<T> = Extract<keyof T, string>;
 type ValueOf<T> = T[keyof T];
 
-type OptionsObject<LongName extends string> = Partial<
+type OptionsObjectInner<LongName extends string> = Partial<
   Record<LongName, boolean>
 >;
 
-export type Cross<Flag extends string, N extends number> = N extends 1
+type Cross<Flag extends string, N extends number> = N extends 1
   ? `${Repeat<Flag, N>}`
   : `${Repeat<Flag, N>}` | `${Cross<Flag, Decrement[N]>}`;
 
+export type OptionsFlags<
+  Map extends Record<string, string>,
+  N extends number
+> = Cross<KeyOfStr<Map>, N>;
+
+export type OptionsObject<Map extends Record<string, string>> =
+  OptionsObjectInner<ValueOf<Map>>;
+
 export type OptionsType<Map extends Record<string, string>, N extends number> =
-  | Partial<Record<ValueOf<Map>, boolean>>
-  | Cross<KeyOfStr<Map>, N>;
+  | OptionsObject<Map>
+  | OptionsFlags<Map, N>;
 
 export function getOptions<Flag extends string, LongName extends string>(
-  options: OptionsObject<LongName> | string,
+  options: OptionsObjectInner<LongName> | string,
   map: { [key in Flag]: LongName }
-): OptionsObject<LongName> {
+): OptionsObjectInner<LongName> {
   if (isString(options)) {
-    const res: OptionsObject<LongName> = {};
+    const res: OptionsObjectInner<LongName> = {};
     for (const f of options) {
       const key = map[f as Flag];
       res[key] = true;

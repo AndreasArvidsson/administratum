@@ -16,11 +16,20 @@ describe("rm()", () => {
     assert.ok(!file.exists());
   });
 
-  it("dir", () => {
+  it("recursive", () => {
     const dir = path.join(os.tmpdir(), uuidv4());
     fs.mkdirSync(dir);
     assert.ok(fs.existsSync(dir));
     const res = rm(dir, { recursive: true });
+    assert.equal(dir, res.path);
+    assert.ok(!fs.existsSync(dir));
+  });
+
+  it("-r", () => {
+    const dir = path.join(os.tmpdir(), uuidv4());
+    fs.mkdirSync(dir);
+    assert.ok(fs.existsSync(dir));
+    const res = rm(dir, "r");
     assert.equal(dir, res.path);
     assert.ok(!fs.existsSync(dir));
   });

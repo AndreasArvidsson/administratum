@@ -27,23 +27,39 @@ describe("find", () => {
   });
 
   it("name", () => {
-    const res = find(dir, { name: /b/ });
+    const res = find(dir, /b/);
     assert.deepEqual(
       res.map((f) => f.name),
       ["b"]
     );
   });
 
-  it("type: f", () => {
-    const res = find(dir, { type: "f" });
+  it("files", () => {
+    const res = find(dir, null, { files: true });
     assert.deepEqual(
       res.map((f) => f.name),
       fileNames
     );
   });
 
-  it("type: d", () => {
-    const res = find(dir, { type: "d" });
+  it("-f", () => {
+    const res = find(dir, null, "f");
+    assert.deepEqual(
+      res.map((f) => f.name),
+      fileNames
+    );
+  });
+
+  it("directories", () => {
+    const res = find(dir, null, { directories: true });
+    assert.deepEqual(
+      res.map((f) => f.name),
+      [dirName]
+    );
+  });
+
+  it("-d", () => {
+    const res = find(dir, null, "d");
     assert.deepEqual(
       res.map((f) => f.name),
       [dirName]

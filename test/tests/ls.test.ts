@@ -13,22 +13,31 @@ describe("ls", () => {
 
   it("all", () => {
     const res = ls(dir, { all: true });
-    const res2 = ls(dir, "a");
     assert.equal(res, ".hidden a b c");
-    assert.equal(res, res2);
+  });
+
+  it("-a", () => {
+    const res = ls(dir, "a");
+    assert.equal(res, ".hidden a b c");
   });
 
   it("one", () => {
     const res = ls(dir, { one: true });
-    const res2 = ls(dir, "1");
     assert.equal(res, "a\nb\nc");
-    assert.equal(res, res2);
+  });
+
+  it("-1", () => {
+    const res = ls(dir, "1");
+    assert.equal(res, "a\nb\nc");
   });
 
   it("long", () => {
     const res = ls(dir, { long: true });
-    const res2 = ls(dir, "l");
     assert.ok(/[a-z-]{9} \d \d \d \d+ \w{3} \d{2} \d{2}:\d{2} \w+/.test(res));
-    assert.equal(res, res2);
+  });
+
+  it("-l", () => {
+    const res = ls(dir, "l");
+    assert.ok(/[a-z-]{9} \d \d \d \d+ \w{3} \d{2} \d{2}:\d{2} \w+/.test(res));
   });
 });

@@ -1,13 +1,18 @@
-import fs from "node:fs";
 import { Path, readFile } from ".";
+import { getOptions, OptionsFlags, OptionsObject } from "./util/Arguments";
 
-interface Options {
-  lineNumber?: boolean;
-  onlyMatching?: boolean;
-  invertMatch?: boolean;
+const optionsMap = {
+  n: "lineNumber",
+  o: "onlyMatching",
+  v: "invertMatch",
+  c: "count",
+} as const;
+
+interface OptionsObj extends OptionsObject<typeof optionsMap> {
   maxCount?: number;
-  count?: boolean;
 }
+
+type Options = OptionsObj | OptionsFlags<typeof optionsMap, 4>;
 
 export const grep = (
   regex: RegExp,
@@ -15,6 +20,7 @@ export const grep = (
   options: Options = {}
 ): string[] => {
   file = new Path(file);
+  const opts = getOptions(options, optionsMap) as OptionsObj;
 
   if (!file.exists()) {
     throw Error(`No such file : '${file}'`);
@@ -33,37 +39,37 @@ export const grep = (
     let lineRes;
 
     if (match) {
-      if (options.invertMatch) {
+      if (opts.invertMatch) {
         continue;
       }
-      if (options.onlyMatching) {
+      if (opts.onlyMatching) {
         lineRes = match[0];
       } else {
         lineRes = line;
       }
     } else {
-      if (!options.invertMatch) {
+      if (!opts.invertMatch) {
         continue;
       }
-      if (options.onlyMatching) {
+      if (opts.onlyMatching) {
         continue;
       } else {
         lineRes = line;
       }
     }
 
-    if (options.lineNumber) {
+    if (opts.lineNumber) {
       lineRes = `${i + 1}:\t${lineRes}`;
     }
 
     result.push(lineRes);
 
-    if (options.maxCount != null && options.maxCount === result.length) {
+    if (opts.maxCount != null && opts.maxCount === result.length) {
       break;
     }
   }
 
-  if (options.count) {
+  if (opts.count) {
     return [result.length.toString()];
   }
 

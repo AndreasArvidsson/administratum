@@ -29,7 +29,7 @@ describe("registry", () => {
 
   it("regQueryKey() no children", () => {
     const res = regQueryKey(
-      "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Apps"
+      "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Feeds"
     );
     assert.ok(res != null);
     assert.ok(res.values.length > 0);

@@ -26,15 +26,6 @@ describe("mv()", () => {
     assert.ok(!source.exists());
   });
 
-  it("file force", () => {
-    const source = tempFile(content);
-    const destination = tempFile(content);
-    const res = mv(source, destination, { force: true });
-    assert.equal(res.path, destination.path);
-    assert.equal(content, fs.readFileSync(res.path, "utf8"));
-    assert.ok(!source.exists());
-  });
-
   it("dir => dir", () => {
     const source = path.join(os.tmpdir(), uuidv4());
     const destination = path.join(os.tmpdir(), uuidv4());
@@ -43,5 +34,23 @@ describe("mv()", () => {
     const res = mv(source, destination);
     assert.ok(res.isDir());
     assert.ok(!fs.existsSync(source));
+  });
+
+  it("force", () => {
+    const source = tempFile(content);
+    const destination = tempFile(content);
+    const res = mv(source, destination, { force: true });
+    assert.equal(res.path, destination.path);
+    assert.equal(content, fs.readFileSync(res.path, "utf8"));
+    assert.ok(!source.exists());
+  });
+
+  it("-f", () => {
+    const source = tempFile(content);
+    const destination = tempFile(content);
+    const res = mv(source, destination, "f");
+    assert.equal(res.path, destination.path);
+    assert.equal(content, fs.readFileSync(res.path, "utf8"));
+    assert.ok(!source.exists());
   });
 });

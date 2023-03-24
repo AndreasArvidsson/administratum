@@ -16,28 +16,48 @@ describe("grep", () => {
     assert.equal(res, "LOG 1\nLOG 3");
   });
 
-  it("line number", () => {
+  it("lineNumber", () => {
     const res = grepStr(/LOG/, file, { lineNumber: true });
     assert.equal(res, "1:\tLOG 1\n3:\tLOG 3");
   });
 
-  it("only matching", () => {
+  it("-n", () => {
+    const res = grepStr(/LOG/, file, "n");
+    assert.equal(res, "1:\tLOG 1\n3:\tLOG 3");
+  });
+
+  it("onlyMatching", () => {
     const res = grepStr(/LOG/, file, { onlyMatching: true });
     assert.equal(res, "LOG\nLOG");
   });
 
-  it("invert match", () => {
+  it("-o", () => {
+    const res = grepStr(/LOG/, file, "o");
+    assert.equal(res, "LOG\nLOG");
+  });
+
+  it("invertMatch", () => {
     const res = grepStr(/LOG/, file, { invertMatch: true });
     assert.equal(res, "WARN 2");
   });
 
-  it("max count", () => {
-    const res = grepStr(/LOG/, file, { maxCount: 1 });
-    assert.equal(res, "LOG 1");
+  it("-v", () => {
+    const res = grepStr(/LOG/, file, "v");
+    assert.equal(res, "WARN 2");
   });
 
   it("count", () => {
     const res = grepStr(/LOG/, file, { count: true });
     assert.equal(res, "2");
+  });
+
+  it("-c", () => {
+    const res = grepStr(/LOG/, file, "c");
+    assert.equal(res, "2");
+  });
+
+  it("maxCount", () => {
+    const res = grepStr(/LOG/, file, { maxCount: 1 });
+    assert.equal(res, "LOG 1");
   });
 });
