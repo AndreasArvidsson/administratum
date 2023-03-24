@@ -1,6 +1,6 @@
 import extractZip from "extract-zip";
 import tar from "tar";
-import { Path } from ".";
+import { mkdirs, Path } from ".";
 
 interface Options {
   force?: boolean;
@@ -11,6 +11,7 @@ function unzip(source: Path, destination: Path): Promise<void> {
 }
 
 function untar(source: Path, destination: Path): Promise<void> {
+  mkdirs(destination);
   return tar.extract({
     file: source.path,
     cwd: destination.path,
