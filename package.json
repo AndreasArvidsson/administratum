@@ -1,16 +1,22 @@
 {
     "name": "administratum",
     "displayName": "Administratum",
-    "version": "0.0.1",
+    "version": "0.1.0",
+    "description": "All the tools you need to perform your duty to the empire of man",
     "publisher": "AndreasArvidsson",
+    "author": "Andreas Arvidsson",
     "license": "MIT",
     "main": "dist/index.js",
     "files": [
         "dist/*"
     ],
+    "homepage": "https://github.com/AndreasArvidsson/administratum",
     "repository": {
         "type": "git",
         "url": "https://github.com/AndreasArvidsson/administratum"
+    },
+    "bugs": {
+        "url": "https://github.com/AndreasArvidsson/administratum/issues"
     },
     "scripts": {
         "test": "tsx test/runTests.ts",
