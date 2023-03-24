@@ -45,11 +45,11 @@ readFile("file.txt");
 ```
 
 ```js
-Path.temp().join("dir", "file.txt").exists();
+touch("file.txt");
 ```
 
 ```js
-touch("file.txt");
+Path.temp().join("dir", "file.txt").exists();
 ```
 
 ### Download files
