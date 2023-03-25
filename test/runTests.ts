@@ -13,6 +13,6 @@ files.forEach((f) => mocha.addFile(path.resolve(cwd, f)));
 
 mocha.run((failures) => {
   if (failures > 0) {
-    new Error(`${failures} tests failed.`);
+    process.exit(1);
   }
 });
