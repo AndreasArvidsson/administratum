@@ -1,9 +1,9 @@
 {
     "compilerOptions": {
         "module": "ESNext",
-        "target": "es2022",
+        "target": "ESNext",
         "lib": [
-            "es2022"
+            "ESNext"
         ],
         "moduleResolution": "nodenext",
         "rootDir": "src",
