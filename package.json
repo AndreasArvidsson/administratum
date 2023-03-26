@@ -23,7 +23,7 @@
         "test": "tsx test/runTests.ts",
         "example": "tsx examples/example.ts",
         "example:flows": "tsx examples/runFlows.ts",
-        "build": "tsc -p . && node esbuild.mjs",
+        "build": "tsc -p . && tsx esbuild.ts",
         "lint": "eslint . --ext .ts"
     },
     "dependencies": {
