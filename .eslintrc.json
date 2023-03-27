@@ -1,21 +1,22 @@
 {
     "extends": [
         "eslint:recommended",
-        "plugin:@typescript-eslint/recommended"
-    ],
-    "parser": "@typescript-eslint/parser",
-    "plugins": [
-        "@typescript-eslint"
+        "plugin:@typescript-eslint/recommended",
+        "plugin:@typescript-eslint/recommended-requiring-type-checking"
     ],
     "root": true,
+    "parser": "@typescript-eslint/parser",
+    "plugins": ["@typescript-eslint"],
+    "ignorePatterns": ["/*", "!src"],
     "parserOptions": {
-        "ecmaVersion": 2022,
-        "sourceType": "module"
+        "project": true,
+        "sourceType": "module",
+        "ecmaVersion": 2022
     },
     "rules": {
-        "@typescript-eslint/naming-convention": "warn",
+        "no-warning-comments": "warn",
         "@typescript-eslint/semi": "warn",
-        "@typescript-eslint/no-non-null-assertion": "off",
+        "@typescript-eslint/naming-convention": "error",
         "curly": "error",
         "no-throw-literal": "error",
         "eqeqeq": [

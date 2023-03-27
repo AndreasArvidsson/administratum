@@ -1,7 +1,7 @@
 {
     "name": "administratum",
     "displayName": "Administratum",
-    "version": "0.1.2",
+    "version": "0.2.0",
     "description": "All the tools you need to perform your duty to the empire of man",
     "publisher": "AndreasArvidsson",
     "author": "Andreas Arvidsson",
@@ -22,9 +22,10 @@
     "scripts": {
         "test": "tsx test/runTests.ts",
         "example": "tsx examples/example.ts",
-        "example:flows": "tsx examples/runFlows.ts",
+        "example:flows": "tsx examples/runFlows.ts examples/props.properties",
         "build": "tsc -p . && tsx esbuild.ts",
-        "lint": "eslint . --ext .ts"
+        "lint": "eslint src",
+        "prettier": "prettier --write src"
     },
     "dependencies": {
         "extract-zip": "^2.0.1",
@@ -46,6 +47,7 @@
         "esbuild": "^0.17.14",
         "eslint": "^8.36.0",
         "mocha": "^10.2.0",
+        "prettier": "^2.8.7",
         "tsx": "^3.12.6",
         "typescript": "^5.0.2"
     }

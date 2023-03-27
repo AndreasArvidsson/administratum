@@ -1,7 +1,7 @@
-import { build } from "esbuild";
+import esbuild from "esbuild";
 
 (async () => {
-  await build({
+  await esbuild.build({
     entryPoints: ["src/index.ts"],
     outfile: "lib/index.js",
     platform: "node",
