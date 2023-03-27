@@ -14,7 +14,7 @@ export const ls = (path: Path | string, options: Options = {}): string => {
   const opts = getOptions(options, optionsMap);
 
   if (!path.exists()) {
-    throw Error(`No such file or directory: '${path}'`);
+    throw Error(`No such file or directory: '${path.path}'`);
   }
 
   const result: string[] = [];
@@ -87,7 +87,10 @@ function pad(num: number) {
 function getPermissions(mode: number): string {
   const str = mode.toString(8);
   return range(1, 4)
-    .map((i) => getPermission(str.at(-i)!))
+    .map((i) =>{ 
+      const val = str.at(-i);
+      return val ? getPermission(val) : "";
+    })
     .join("");
 }
 

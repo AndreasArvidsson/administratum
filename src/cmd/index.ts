@@ -131,7 +131,7 @@ function cmdAsyncInternal(
       child.stderr.pipe(stderrStream);
     }
 
-    child.stdout.on("data", (data) => {
+    child.stdout.on("data", (data: string) => {
       stdoutBuffer.push(data);
 
       if (eventListenersState.eventListeners.length !== 0) {
@@ -139,7 +139,7 @@ function cmdAsyncInternal(
         runEventListeners(eventListenersState);
       }
     });
-    child.stderr.on("data", (data) => {
+    child.stderr.on("data", (data: string) => {
       stderrBuffer.push(data);
     });
 

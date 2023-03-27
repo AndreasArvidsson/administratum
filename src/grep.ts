@@ -23,11 +23,11 @@ export const grep = (
   const opts = getOptions(options, optionsMap) as OptionsObj;
 
   if (!file.exists()) {
-    throw Error(`No such file : '${file}'`);
+    throw Error(`No such file : '${file.path}'`);
   }
 
   if (file.isDir()) {
-    throw Error(`File is a directory: '${file}'`);
+    throw Error(`File is a directory: '${file.path}'`);
   }
 
   const lines = readFile(file).split("\n");

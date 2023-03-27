@@ -27,12 +27,12 @@ export const extract = async (
   destination = new Path(destination ?? source.name);
 
   if (!source.exists) {
-    throw Error(`No such file: '${source}'`);
+    throw Error(`No such file: '${source.path}'`);
   }
 
   if (destination.exists()) {
     if (destination.isFile() && !options.force) {
-      throw Error(`Destination file already exists: '${destination}'`);
+      throw Error(`Destination file already exists: '${destination.path}'`);
     }
   }
 

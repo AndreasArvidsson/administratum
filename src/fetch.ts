@@ -19,7 +19,7 @@ export const fetch = (url: string, path?: Path | string): Promise<Response> => {
 
     const request = lib.get(href, (response) => {
       if (response.statusCode !== 200) {
-        reject(Error(`Respond code: ${response.statusCode}`));
+        reject(Error(`Respond code: ${response.statusCode ?? -1}`));
       }
 
       const contentLength = response.headers["content-length"]

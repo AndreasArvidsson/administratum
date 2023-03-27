@@ -24,7 +24,7 @@ export const find = (
   })();
 
   if (!path.exists()) {
-    throw Error(`No such file or directory: '${path}'`);
+    throw Error(`No such file or directory: '${path.path}'`);
   }
 
   function findFile(file: Path): Path[] {

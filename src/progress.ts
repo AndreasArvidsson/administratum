@@ -8,7 +8,7 @@ export const progressPromises = (
   let first = true;
   let numResolved = 0;
   const isResolved = new Array<boolean>(promises.length);
-  const responses = new Array(promises.length);
+  const responses = new Array<unknown>(promises.length);
   isResolved.fill(false);
   responses.fill(null);
 

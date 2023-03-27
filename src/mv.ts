@@ -18,17 +18,17 @@ export const mv = (
   const opts = getOptions(options, optionsMap);
 
   if (source.equals(destination)) {
-    throw Error(`Can't move to self: '${source}'`);
+    throw Error(`Can't move to self: '${source.path}'`);
   }
 
   if (!source.exists()) {
-    throw Error(`No such file or directory: '${source}'`);
+    throw Error(`No such file or directory: '${source.path}'`);
   }
 
   if (destination.exists()) {
     if (destination.isFile()) {
       if (!opts.force) {
-        throw Error(`Destination file already exists: '${destination}'`);
+        throw Error(`Destination file already exists: '${destination.path}'`);
       }
     } else {
       destination = destination.join(source.name);

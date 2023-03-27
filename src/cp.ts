@@ -19,16 +19,16 @@ export const cp = (
   const opts = getOptions(options, optionsMap);
 
   if (source.equals(destination)) {
-    throw Error(`Can't copy to self: '${source}'`);
+    throw Error(`Can't copy to self: '${source.path}'`);
   }
 
   if (!source.exists()) {
-    throw Error(`No such file or directory: '${source}'`);
+    throw Error(`No such file or directory: '${source.path}'`);
   }
 
   if (source.isDir()) {
     if (!opts.recursive) {
-      throw Error(`Source is a directory: '${source}'`);
+      throw Error(`Source is a directory: '${source.path}'`);
     }
   }
 

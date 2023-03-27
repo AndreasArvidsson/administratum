@@ -26,13 +26,10 @@ export function createError(params: ErrorParameters): Error {
 }
 
 function getErrorReason(child: ErrorParameters): string | undefined {
-  if (child?.error?.cause != null) {
-    return `Command failed with ${child.error.cause}`;
-  }
   if (child.signal != null) {
     return `Command was killed with ${child.signal}`;
   }
-  if (child.exitCode !== 0) {
+  if (child.exitCode) {
     return `Command failed with exit code ${child.exitCode}`;
   }
   return "Command failed";

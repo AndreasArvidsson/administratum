@@ -13,12 +13,12 @@ export const rm = (path: Path | string, options: Options = {}): Path => {
   const opts = getOptions(options, optionsMap);
 
   if (!path.exists()) {
-    throw Error(`No such file or directory: '${path}'`);
+    throw Error(`No such file or directory: '${path.path}'`);
   }
 
   if (path.isDir()) {
     if (!opts.recursive) {
-      throw Error(`Path is a directory: '${path}'`);
+      throw Error(`Path is a directory: '${path.path}'`);
     }
   }
 
