@@ -8,29 +8,29 @@ import { tempFile, rm } from "../../src";
 const content = "my\ncontent";
 
 describe("rm()", () => {
-  it("file", () => {
-    const file = tempFile(content);
-    assert.ok(file.exists());
-    const res = rm(file);
-    assert.equal(file.path, res.path);
-    assert.ok(!file.exists());
-  });
+    it("file", () => {
+        const file = tempFile(content);
+        assert.ok(file.exists());
+        const res = rm(file);
+        assert.equal(file.path, res.path);
+        assert.ok(!file.exists());
+    });
 
-  it("recursive", () => {
-    const dir = path.join(os.tmpdir(), uuidv4());
-    fs.mkdirSync(dir);
-    assert.ok(fs.existsSync(dir));
-    const res = rm(dir, { recursive: true });
-    assert.equal(dir, res.path);
-    assert.ok(!fs.existsSync(dir));
-  });
+    it("recursive", () => {
+        const dir = path.join(os.tmpdir(), uuidv4());
+        fs.mkdirSync(dir);
+        assert.ok(fs.existsSync(dir));
+        const res = rm(dir, { recursive: true });
+        assert.equal(dir, res.path);
+        assert.ok(!fs.existsSync(dir));
+    });
 
-  it("-r", () => {
-    const dir = path.join(os.tmpdir(), uuidv4());
-    fs.mkdirSync(dir);
-    assert.ok(fs.existsSync(dir));
-    const res = rm(dir, "r");
-    assert.equal(dir, res.path);
-    assert.ok(!fs.existsSync(dir));
-  });
+    it("-r", () => {
+        const dir = path.join(os.tmpdir(), uuidv4());
+        fs.mkdirSync(dir);
+        assert.ok(fs.existsSync(dir));
+        const res = rm(dir, "r");
+        assert.equal(dir, res.path);
+        assert.ok(!fs.existsSync(dir));
+    });
 });

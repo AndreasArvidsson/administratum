@@ -9,19 +9,19 @@ import { fixturesDir } from "../testUtil";
 const dir = path.join(fixturesDir, "extract");
 
 describe("extract", () => {
-  it("zip", async () => {
-    const source = path.join(dir, "a.zip");
-    const destination = path.join(os.tmpdir(), uuidv4());
-    const res = await extract(source, destination);
-    assert.equal(destination, res.path);
-    assert.ok(fs.existsSync(path.join(destination, "a")));
-  });
+    it("zip", async () => {
+        const source = path.join(dir, "a.zip");
+        const destination = path.join(os.tmpdir(), uuidv4());
+        const res = await extract(source, destination);
+        assert.equal(destination, res.path);
+        assert.ok(fs.existsSync(path.join(destination, "a")));
+    });
 
-  it("tar", async () => {
-    const source = path.join(dir, "a.tar");
-    const destination = path.join(os.tmpdir(), uuidv4());
-    const res = await extract(source, destination);
-    assert.equal(destination, res.path);
-    assert.ok(fs.existsSync(path.join(destination, "a")));
-  });
+    it("tar", async () => {
+        const source = path.join(dir, "a.tar");
+        const destination = path.join(os.tmpdir(), uuidv4());
+        const res = await extract(source, destination);
+        assert.equal(destination, res.path);
+        assert.ok(fs.existsSync(path.join(destination, "a")));
+    });
 });

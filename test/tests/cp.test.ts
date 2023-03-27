@@ -9,39 +9,39 @@ import { fixturesDir } from "../testUtil";
 const source = path.join(fixturesDir, "list", "a");
 
 describe("cp()", () => {
-  it("file", () => {
-    const content = fs.readFileSync(source, "utf8");
-    const destination = path.join(os.tmpdir(), uuidv4());
-    const res = cp(source, destination);
-    assert.equal(res.path, destination);
-    assert.equal(content, fs.readFileSync(destination, "utf8"));
-  });
+    it("file", () => {
+        const content = fs.readFileSync(source, "utf8");
+        const destination = path.join(os.tmpdir(), uuidv4());
+        const res = cp(source, destination);
+        assert.equal(res.path, destination);
+        assert.equal(content, fs.readFileSync(destination, "utf8"));
+    });
 
-  it("force", () => {
-    const content = fs.readFileSync(source, "utf8");
-    const destination = path.join(os.tmpdir(), uuidv4());
-    cp(source, destination, { force: true });
-    assert.equal(content, fs.readFileSync(destination, "utf8"));
-  });
+    it("force", () => {
+        const content = fs.readFileSync(source, "utf8");
+        const destination = path.join(os.tmpdir(), uuidv4());
+        cp(source, destination, { force: true });
+        assert.equal(content, fs.readFileSync(destination, "utf8"));
+    });
 
-  it("-f", () => {
-    const content = fs.readFileSync(source, "utf8");
-    const destination = path.join(os.tmpdir(), uuidv4());
-    cp(source, destination, "f");
-    assert.equal(content, fs.readFileSync(destination, "utf8"));
-  });
+    it("-f", () => {
+        const content = fs.readFileSync(source, "utf8");
+        const destination = path.join(os.tmpdir(), uuidv4());
+        cp(source, destination, "f");
+        assert.equal(content, fs.readFileSync(destination, "utf8"));
+    });
 
-  it("recursive", () => {
-    const destination = path.join(os.tmpdir(), uuidv4());
-    const res = cp(fixturesDir, destination, { recursive: true });
-    assert.equal(res.path, destination);
-    assert.ok(res.isDir());
-  });
+    it("recursive", () => {
+        const destination = path.join(os.tmpdir(), uuidv4());
+        const res = cp(fixturesDir, destination, { recursive: true });
+        assert.equal(res.path, destination);
+        assert.ok(res.isDir());
+    });
 
-  it("-r", () => {
-    const destination = path.join(os.tmpdir(), uuidv4());
-    const res = cp(fixturesDir, destination, "r");
-    assert.equal(res.path, destination);
-    assert.ok(res.isDir());
-  });
+    it("-r", () => {
+        const destination = path.join(os.tmpdir(), uuidv4());
+        const res = cp(fixturesDir, destination, "r");
+        assert.equal(res.path, destination);
+        assert.ok(res.isDir());
+    });
 });

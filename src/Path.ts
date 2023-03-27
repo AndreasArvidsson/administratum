@@ -84,11 +84,12 @@ export class Path {
         );
     }
 
-    files(): Path[] {
-        return fs
-            .readdirSync(this.path)
-            .sort()
-            .map((f) => this.join(f));
+    files(name?: RegExp): Path[] {
+        let fileNames = fs.readdirSync(this.path);
+        if (name) {
+            fileNames = fileNames.filter((f) => name.test(f));
+        }
+        return fileNames.sort().map((f) => this.join(f));
     }
 
     glob(pattern: string): Path[] {
