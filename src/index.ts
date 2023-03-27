@@ -1,3 +1,4 @@
+export * from "./appendFile";
 export * from "./cd";
 export * from "./cmd";
 export * from "./cp";
@@ -20,3 +21,4 @@ export * from "./rm";
 export * from "./tempFile";
 export * from "./registry";
 export * from "./touch";
+export * from "./writeFile";
