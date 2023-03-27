@@ -20,6 +20,7 @@ export const fetch = (url: string, path?: Path | string): Promise<Response> => {
         const request = lib.get(href, (response) => {
             if (response.statusCode !== 200) {
                 reject(Error(`Respond code: ${response.statusCode ?? -1}`));
+                return;
             }
 
             const contentLength = response.headers["content-length"]
@@ -34,6 +35,7 @@ export const fetch = (url: string, path?: Path | string): Promise<Response> => {
                         size: contentLength,
                         message: "Already existed",
                     });
+                    return;
                 }
             }
 

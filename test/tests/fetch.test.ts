@@ -8,11 +8,20 @@ import { fetch } from "../../src";
 const url =
     "https://raw.githubusercontent.com/AndreasArvidsson/administratum/main/images/Imperio_adeptus_administratum_adepto.webp";
 
-describe("fetch", () => {
-    it("fetch()", async () => {
-        const destination = path.join(os.tmpdir(), uuidv4());
+describe("fetch()", () => {
+    const destination = path.join(os.tmpdir(), uuidv4());
+
+    it("fetch", async () => {
         const res = await fetch(url, destination);
         assert.equal(destination, res.file.path);
         assert.ok(fs.existsSync(res.file.path));
+        assert.ok(res.message.includes("Downloaded"));
+    });
+
+    it("fetch existing", async () => {
+        const res = await fetch(url, destination);
+        assert.equal(destination, res.file.path);
+        assert.ok(fs.existsSync(res.file.path));
+        assert.ok(res.message.includes("existed"));
     });
 });
