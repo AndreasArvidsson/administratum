@@ -156,7 +156,7 @@ async function runTaskFunctions(hasOnly: boolean) {
         const flow = flows[i];
 
         if (!shouldRun(hasOnly, flow)) {
-            const prefix = previousFlowRan ? "\n" : "";
+            const prefix = previousFlowRan ? "\n\n" : "";
             previousFlowRan = false;
             console.log(
                 `${prefix}========== ${flow.name} [SKIPPED] ==========`
@@ -164,7 +164,7 @@ async function runTaskFunctions(hasOnly: boolean) {
             continue;
         }
 
-        const prefix = i > 0 ? "\n" : "";
+        const prefix = i > 0 ? "\n\n" : "";
         previousFlowRan = true;
         console.log(`${prefix}========== ${flow.name} [Start] ==========`);
         const t1 = Date.now();
