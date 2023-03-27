@@ -55,7 +55,7 @@ const runFlows = async (options: Options): Promise<void> => {
     await runTaskFunctions(hasOnly);
     const t2 = Date.now();
     const duration = formatDuration(t1, t2);
-    console.log(`\n[ All flows completed @ ${duration} ]`);
+    console.log(`\n\n[ All flows completed @ ${duration} ]`);
 };
 
 const flow = (name: string, fn: FlowFn) => {
