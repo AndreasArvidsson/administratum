@@ -35,6 +35,7 @@ export const fetch = (url: string, path?: Path | string): Promise<Response> => {
                         size: contentLength,
                         message: "Already existed",
                     });
+                    response.destroy();
                     return;
                 }
             }
