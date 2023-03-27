@@ -1,9 +1,9 @@
 import { flow, sleep } from "../src";
 
-flow("Flow 1", async (task, options) => {
+flow("Flow 1", async (task, properties) => {
     await sleep("500ms");
 
-    console.log(`option: '${options.get("flow1.value")}'\n`)
+    console.log(`property: '${properties.get("flow1.value")}'\n`);
 
     task("task 1:1", async () => {
         console.log("1:1 start");
