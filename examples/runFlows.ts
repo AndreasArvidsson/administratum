@@ -4,5 +4,5 @@ import { runFlows, Path } from "../src";
     const files = new Path(__dirname).glob("**/**.flow.ts").sort();
     const propertiesFile = process.argv[2];
 
-    await runFlows({ files, propertiesFile });
+    await runFlows({ files, propertiesFile, skipPrompt: false });
 })();

@@ -3,6 +3,7 @@ import { Path, promptContinue, readFile } from ".";
 interface Options {
     files: Path[] | string[];
     propertiesFile?: Path | string;
+    skipPrompt?: boolean;
 }
 
 type TaskFn = () => void | Promise<void>;
@@ -47,7 +48,9 @@ const runFlows = async (options: Options): Promise<void> => {
     const hasOnly = flows.some((w) => w.only || w.tasks.some((t) => t.only));
     logFiles(files);
     logFlowsAndTasks(hasOnly);
-    await promptContinue();
+    if (!options.skipPrompt) {
+        await promptContinue();
+    }
     const t1 = Date.now();
     await runTaskFunctions(hasOnly);
     const t2 = Date.now();
