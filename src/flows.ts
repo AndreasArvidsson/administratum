@@ -175,13 +175,13 @@ async function runTaskFunctions(hasOnly: boolean) {
 
             if (!shouldRun(hasOnly, flow, task)) {
                 const prefix = previousTaskRan ? "\n" : "";
-                console.log(`${prefix}- ${task.name} [SKIPPED]`);
+                console.log(`${prefix}* ${task.name} [SKIPPED]`);
                 previousTaskRan = false;
                 continue;
             }
 
             const prefix = j > 0 ? "\n" : "";
-            console.log(`${prefix}- ${task.name}`);
+            console.log(`${prefix}* ${task.name}`);
             previousTaskRan = true;
             await Promise.resolve(task.fn());
         }
