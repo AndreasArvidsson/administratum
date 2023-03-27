@@ -2,18 +2,18 @@ import fs from "node:fs";
 import { Path } from ".";
 
 export const touch = (path: Path | string): Path => {
-  path = new Path(path);
+    path = new Path(path);
 
-  if (path.exists()) {
-    if (path.isDir()) {
-      throw Error(`Path is a directory: '${path.path}'`);
+    if (path.exists()) {
+        if (path.isDir()) {
+            throw Error(`Path is a directory: '${path.path}'`);
+        }
     }
-  }
 
-  fs.closeSync(fs.openSync(path.path, "a"));
+    fs.closeSync(fs.openSync(path.path, "a"));
 
-  const now = new Date();
-  fs.utimesSync(path.path, now, now);
+    const now = new Date();
+    fs.utimesSync(path.path, now, now);
 
-  return path;
+    return path;
 };

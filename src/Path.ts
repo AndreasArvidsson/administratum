@@ -4,97 +4,100 @@ import os from "node:os";
 import pathlib from "node:path";
 
 export class Path {
-  readonly path: string;
+    readonly path: string;
 
-  static home(): Path {
-    return new Path(os.homedir());
-  }
-
-  static temp(): Path {
-    return new Path(os.tmpdir());
-  }
-
-  static cwd(): Path {
-    return new Path(process.cwd());
-  }
-
-  static sep(): string {
-    return pathlib.sep;
-  }
-
-  static oldPWD(): Path | undefined {
-    if (!process.env.OLDPWD) {
-      return undefined;
+    static home(): Path {
+        return new Path(os.homedir());
     }
-    return new Path(process.env.OLDPWD);
-  }
 
-  constructor(path: Path | string) {
-    this.path = path instanceof Path ? path.path : pathlib.resolve(path);
-  }
+    static temp(): Path {
+        return new Path(os.tmpdir());
+    }
 
-  get name(): string {
-    return pathlib.basename(this.path);
-  }
+    static cwd(): Path {
+        return new Path(process.cwd());
+    }
 
-  get ext(): string {
-    return pathlib.extname(this.path);
-  }
+    static sep(): string {
+        return pathlib.sep;
+    }
 
-  exists(): boolean {
-    return fs.existsSync(this.path);
-  }
+    static oldPWD(): Path | undefined {
+        if (!process.env.OLDPWD) {
+            return undefined;
+        }
+        return new Path(process.env.OLDPWD);
+    }
 
-  isFile(): boolean {
-    return this.stats().isFile();
-  }
+    constructor(path: Path | string) {
+        this.path = path instanceof Path ? path.path : pathlib.resolve(path);
+    }
 
-  isDir(): boolean {
-    return this.stats().isDirectory();
-  }
+    get name(): string {
+        return pathlib.basename(this.path);
+    }
 
-  size(): number {
-    return this.stats().size;
-  }
+    get ext(): string {
+        return pathlib.extname(this.path);
+    }
 
-  stats(): Stats {
-    return fs.statSync(this.path);
-  }
+    exists(): boolean {
+        return fs.existsSync(this.path);
+    }
 
-  equals(path: Path): boolean {
-    return this.path === path.path;
-  }
+    isFile(): boolean {
+        return this.stats().isFile();
+    }
 
-  toString(): string {
-    return this.path;
-  }
+    isDir(): boolean {
+        return this.stats().isDirectory();
+    }
 
-  join(...paths: string[]): Path {
-    return new Path(pathlib.join(this.path, ...paths));
-  }
+    size(): number {
+        return this.stats().size;
+    }
 
-  dir(): Path {
-    return new Path(pathlib.dirname(this.path));
-  }
+    stats(): Stats {
+        return fs.statSync(this.path);
+    }
 
-  relative(path: Path | string): string {
-    return pathlib.relative(this.path, path instanceof Path ? path.path : path);
-  }
+    equals(path: Path): boolean {
+        return this.path === path.path;
+    }
 
-  files(): Path[] {
-    return fs
-      .readdirSync(this.path)
-      .sort()
-      .map((f) => this.join(f));
-  }
+    toString(): string {
+        return this.path;
+    }
 
-  glob(pattern: string): Path[] {
-    return glob
-      .globSync(pattern, { cwd: this.path })
-      .map((f) => new Path(pathlib.join(this.path, f)));
-  }
+    join(...paths: string[]): Path {
+        return new Path(pathlib.join(this.path, ...paths));
+    }
+
+    dir(): Path {
+        return new Path(pathlib.dirname(this.path));
+    }
+
+    relative(path: Path | string): string {
+        return pathlib.relative(
+            this.path,
+            path instanceof Path ? path.path : path
+        );
+    }
+
+    files(): Path[] {
+        return fs
+            .readdirSync(this.path)
+            .sort()
+            .map((f) => this.join(f));
+    }
+
+    glob(pattern: string): Path[] {
+        return glob
+            .globSync(pattern, { cwd: this.path })
+            .map((f) => new Path(pathlib.join(this.path, f)));
+    }
 }
 
 export const getCtime = (path: Path) => {
-  return path.stats().ctime;
+    return path.stats().ctime;
 };

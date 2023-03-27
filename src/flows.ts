@@ -7,8 +7,8 @@ interface Options {
 
 type TaskFn = () => void | Promise<void>;
 type TaskSkipOnlyFunction = (name: string, fn: TaskFn) => void;
-interface  Properties {
-    get:(key: string, def?: string) => string;
+interface Properties {
+    get: (key: string, def?: string) => string;
 }
 
 interface TaskFunction {
@@ -17,7 +17,10 @@ interface TaskFunction {
     skip: TaskSkipOnlyFunction;
 }
 
-type FlowFn = (task: TaskFunction, properties: Properties) => void | Promise<void>;
+type FlowFn = (
+    task: TaskFunction,
+    properties: Properties
+) => void | Promise<void>;
 
 interface TaskDesc {
     name: string;
@@ -64,10 +67,8 @@ flow.skip = (name: string, fn: FlowFn) => {
     flows.push({ name, fn, tasks: [], skip: true });
 };
 
-function loadProperties(
-    propertiesFile: Path | string | undefined
-): Properties {
-    const properties:Record<string, string> = {};
+function loadProperties(propertiesFile: Path | string | undefined): Properties {
+    const properties: Record<string, string> = {};
     if (propertiesFile != null) {
         const lines = readFile(propertiesFile).split("\n");
         for (const line of lines) {
@@ -83,8 +84,8 @@ function loadProperties(
     }
     return {
         get(key: string, def?: string) {
-            return properties[key] ?? def??undefined;
-        }
+            return properties[key] ?? def ?? undefined;
+        },
     };
 }
 
