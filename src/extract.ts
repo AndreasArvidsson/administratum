@@ -43,10 +43,15 @@ export const extract = async (
             await unzip(source, destination);
             break;
         case ".tar":
+        case ".tgz":
             await untar(source, destination);
             break;
         default:
-            throw new Error(`Unknown archive '${source.ext}'`);
+            if (source.name.endsWith(".tar.gz")) {
+                await untar(source, destination);
+            } else {
+                throw new Error(`Unknown archive '${source.name}'`);
+            }
     }
 
     return destination;
