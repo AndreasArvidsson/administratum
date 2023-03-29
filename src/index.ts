@@ -1,6 +1,6 @@
 export * from "./appendFile";
 export * from "./cd";
-export * from "./cmd";
+export * from "./cmd/cmd";
 export * from "./cp";
 export * from "./cron";
 export * from "./extract";
