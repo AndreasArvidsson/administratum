@@ -78,10 +78,7 @@ export class Path {
     }
 
     relative(path: Path | string): string {
-        return pathlib.relative(
-            this.path,
-            path instanceof Path ? path.path : path
-        );
+        return pathlib.relative(this.path, path instanceof Path ? path.path : path);
     }
 
     files(name?: RegExp): Path[] {

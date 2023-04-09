@@ -38,7 +38,7 @@ function range(a: number, b?: number, step = 1): RangeIterator {
 
         [Symbol.iterator]() {
             return this;
-        },
+        }
     };
 }
 

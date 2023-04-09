@@ -21,7 +21,7 @@ describe("find", () => {
         const res = findStr(dir);
         const expected = [
             ["fixtures", dirName].join(path.sep),
-            ...fileNames.map((f) => ["fixtures", dirName, f].join(path.sep)),
+            ...fileNames.map((f) => ["fixtures", dirName, f].join(path.sep))
         ].join("\n");
         assert.equal(res, expected);
     });

@@ -23,6 +23,6 @@ export const readFileByline = (file: Path | string) => {
 
     return readline.createInterface({
         input: fileStream,
-        crlfDelay: Infinity,
+        crlfDelay: Infinity
     });
 };

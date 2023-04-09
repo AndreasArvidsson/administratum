@@ -10,10 +10,7 @@ export const sleep = async (timeout: string): Promise<void> => {
     });
 };
 
-export const countdown = (
-    seconds: number,
-    progress: (secondsLeft: number) => void
-): void => {
+export const countdown = (seconds: number, progress: (secondsLeft: number) => void): void => {
     progress(seconds);
     if (seconds) {
         setTimeout(() => {

@@ -10,42 +10,24 @@
             "type": "node",
             "request": "launch",
             "runtimeExecutable": "npm",
-            "runtimeArgs": [
-                "run",
-                "test"
-            ],
-            "resolveSourceMapLocations": [
-                "${workspaceFolder}/**",
-                "!**/node_modules/**"
-            ]
+            "runtimeArgs": ["run", "test"],
+            "resolveSourceMapLocations": ["${workspaceFolder}/**", "!**/node_modules/**"]
         },
         {
             "name": "Run flows example",
             "type": "node",
             "request": "launch",
             "runtimeExecutable": "npm",
-            "runtimeArgs": [
-                "run",
-                "example:flows"
-            ],
-            "resolveSourceMapLocations": [
-                "${workspaceFolder}/**",
-                "!**/node_modules/**"
-            ]
+            "runtimeArgs": ["run", "example:flows"],
+            "resolveSourceMapLocations": ["${workspaceFolder}/**", "!**/node_modules/**"]
         },
         {
             "name": "Run example",
             "type": "node",
             "request": "launch",
             "runtimeExecutable": "npm",
-            "runtimeArgs": [
-                "run",
-                "example"
-            ],
-            "resolveSourceMapLocations": [
-                "${workspaceFolder}/**",
-                "!**/node_modules/**"
-            ]
+            "runtimeArgs": ["run", "example"],
+            "resolveSourceMapLocations": ["${workspaceFolder}/**", "!**/node_modules/**"]
         }
     ]
 }

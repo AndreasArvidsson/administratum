@@ -2,13 +2,7 @@ import assert from "node:assert";
 import { max, min } from "../../src";
 
 const numbers = [5, 1, 9, 2, 7];
-const objects = [
-    { value: 5 },
-    { value: 1 },
-    { value: 9 },
-    { value: 2 },
-    { value: 7 },
-];
+const objects = [{ value: 5 }, { value: 1 }, { value: 9 }, { value: 2 }, { value: 7 }];
 
 const key = (v: { value: number }) => v.value;
 

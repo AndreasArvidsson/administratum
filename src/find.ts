@@ -3,16 +3,12 @@ import { getOptions, OptionsType } from "./util/Arguments";
 
 const optionsMap = {
     f: "files",
-    d: "directories",
+    d: "directories"
 } as const;
 
 type Options = OptionsType<typeof optionsMap, 2>;
 
-export const find = (
-    path: Path | string,
-    name?: RegExp | null,
-    options: Options = {}
-): Path[] => {
+export const find = (path: Path | string, name?: RegExp | null, options: Options = {}): Path[] => {
     path = new Path(path);
     const opts = getOptions(options, optionsMap);
 
@@ -50,11 +46,7 @@ export const find = (
     return findFile(path);
 };
 
-export const findStr = (
-    path: string,
-    name?: RegExp | null,
-    options: Options = {}
-): string => {
+export const findStr = (path: string, name?: RegExp | null, options: Options = {}): string => {
     const root = Path.cwd();
     return find(path, name, options)
         .map((f) => root.relative(f))

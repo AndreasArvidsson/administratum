@@ -7,7 +7,7 @@ import {
     regHasKey,
     regHasValue,
     regQueryKey,
-    regQueryValue,
+    regQueryValue
 } from "../../src";
 
 const keyName =

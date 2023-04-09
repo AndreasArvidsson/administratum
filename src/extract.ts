@@ -14,7 +14,7 @@ function untar(source: Path, destination: Path): Promise<void> {
     mkdirs(destination);
     return tar.extract({
         file: source.path,
-        cwd: destination.path,
+        cwd: destination.path
     });
 }
 
@@ -32,9 +32,7 @@ export const extract = async (
 
     if (destination.exists()) {
         if (destination.isFile() && !options.force) {
-            throw Error(
-                `Destination file already exists: '${destination.path}'`
-            );
+            throw Error(`Destination file already exists: '${destination.path}'`);
         }
     }
 

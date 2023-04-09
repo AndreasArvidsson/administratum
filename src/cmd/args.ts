@@ -28,10 +28,7 @@ export function parseCommand(cmdOrFile: string, args?: string[] | Options) {
     return { file: parts[0], args: parts.slice(1) };
 }
 
-export function parseOptions(
-    optArgs?: string[] | Options,
-    optOptions?: Options
-): ParsedOptions {
+export function parseOptions(optArgs?: string[] | Options, optOptions?: Options): ParsedOptions {
     const { encoding, cwd, stdin, stdout, stderr, shell, env, timeout } =
         optArgs != null && !Array.isArray(optArgs) ? optArgs : optOptions ?? {};
     return {
@@ -42,14 +39,11 @@ export function parseOptions(
         stderr: stderr ?? "stderr",
         shell: shell ?? true,
         env: Object.assign({}, process.env, env),
-        timeout: timeout ? getTimeoutMs(timeout) : 0,
+        timeout: timeout ? getTimeoutMs(timeout) : 0
     };
 }
 
-export function getStream(
-    pipe: Pipe,
-    stdin?: stream.Writable
-): stream.Writable | undefined {
+export function getStream(pipe: Pipe, stdin?: stream.Writable): stream.Writable | undefined {
     if (pipe === "stdin") {
         return stdin;
     }

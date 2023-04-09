@@ -2,9 +2,7 @@
     "compilerOptions": {
         "module": "ESNext",
         "target": "ESNext",
-        "lib": [
-            "ESNext"
-        ],
+        "lib": ["ESNext"],
         "moduleResolution": "nodenext",
         "rootDir": "src",
         "declarationDir": "lib/types",
@@ -13,9 +11,7 @@
         "declaration": true,
         "noEmitOnError": true,
         "strict": true,
-        "forceConsistentCasingInFileNames": true,
+        "forceConsistentCasingInFileNames": true
     },
-    "include": [
-        "src"
-    ]
+    "include": ["src"]
 }

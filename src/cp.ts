@@ -4,7 +4,7 @@ import { getOptions, OptionsType } from "./util/Arguments";
 
 const optionsMap = {
     r: "recursive",
-    f: "force",
+    f: "force"
 } as const;
 
 type Options = OptionsType<typeof optionsMap, 2>;
@@ -35,7 +35,7 @@ export const cp = (
     fs.cpSync(source.path, destination.path, {
         errorOnExist: true,
         recursive: true,
-        force: opts.force ?? false,
+        force: opts.force ?? false
     });
 
     return destination;

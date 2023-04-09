@@ -18,10 +18,7 @@ interface TaskFunction {
     skip: TaskSkipOnlyFunction;
 }
 
-type FlowFn = (
-    task: TaskFunction,
-    properties: Properties
-) => void | Promise<void>;
+type FlowFn = (task: TaskFunction, properties: Properties) => void | Promise<void>;
 
 interface TaskDesc {
     name: string;
@@ -88,7 +85,7 @@ function loadProperties(propertiesFile: Path | string | undefined): Properties {
     return {
         get(key: string, def?: string) {
             return properties[key] ?? def ?? undefined;
-        },
+        }
     };
 }
 
@@ -158,9 +155,7 @@ async function runTaskFunctions(hasOnly: boolean) {
         if (!shouldRun(hasOnly, flow)) {
             const prefix = previousFlowRan ? "\n\n" : "";
             previousFlowRan = false;
-            console.log(
-                `${prefix}========== ${flow.name} [SKIPPED] ==========`
-            );
+            console.log(`${prefix}========== ${flow.name} [SKIPPED] ==========`);
             continue;
         }
 
@@ -188,9 +183,7 @@ async function runTaskFunctions(hasOnly: boolean) {
 
         const t2 = Date.now();
         const duration = formatDuration(t1, t2);
-        console.log(
-            `========== ${flow.name} [Completed @ ${duration}] ==========`
-        );
+        console.log(`========== ${flow.name} [Completed @ ${duration}] ==========`);
     }
 }
 

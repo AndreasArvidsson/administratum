@@ -46,7 +46,7 @@ export function runEventListeners(state: EventListenerState) {
                 },
                 on: (regex, callback) => {
                     toAdd.push({ regex, callback });
-                },
+                }
             });
             offset = Math.max(offset, match.index + match[0].length);
         }

@@ -5,7 +5,7 @@ const optionsMap = {
     n: "lineNumber",
     o: "onlyMatching",
     v: "invertMatch",
-    c: "count",
+    c: "count"
 } as const;
 
 interface OptionsObj extends OptionsObject<typeof optionsMap> {
@@ -14,11 +14,7 @@ interface OptionsObj extends OptionsObject<typeof optionsMap> {
 
 type Options = OptionsObj | OptionsFlags<typeof optionsMap, 4>;
 
-export const grep = (
-    regex: RegExp,
-    file: Path | string,
-    options: Options = {}
-): string[] => {
+export const grep = (regex: RegExp, file: Path | string, options: Options = {}): string[] => {
     file = new Path(file);
     const opts = getOptions(options, optionsMap) as OptionsObj;
 
@@ -76,10 +72,6 @@ export const grep = (
     return result;
 };
 
-export const grepStr = (
-    regex: RegExp,
-    file: Path | string,
-    options: Options = {}
-): string => {
+export const grepStr = (regex: RegExp, file: Path | string, options: Options = {}): string => {
     return grep(regex, file, options).join("\n");
 };

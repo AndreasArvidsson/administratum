@@ -3,7 +3,7 @@ import { Path } from ".";
 import { OptionsType, getOptions } from "./util/Arguments";
 
 const optionsMap = {
-    f: "force",
+    f: "force"
 } as const;
 
 type Options = OptionsType<typeof optionsMap, 1>;
@@ -28,9 +28,7 @@ export const mv = (
     if (destination.exists()) {
         if (destination.isFile()) {
             if (!opts.force) {
-                throw Error(
-                    `Destination file already exists: '${destination.path}'`
-                );
+                throw Error(`Destination file already exists: '${destination.path}'`);
             }
         } else {
             destination = destination.join(source.name);

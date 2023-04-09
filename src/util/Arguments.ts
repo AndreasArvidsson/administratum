@@ -7,21 +7,18 @@ type Repeat<S extends string, N extends number> = N extends 0
 type KeyOfStr<T> = Extract<keyof T, string>;
 type ValueOf<T> = T[keyof T];
 
-type OptionsObjectInner<LongName extends string> = Partial<
-    Record<LongName, boolean>
->;
+type OptionsObjectInner<LongName extends string> = Partial<Record<LongName, boolean>>;
 
 type Cross<Flag extends string, N extends number> = N extends 1
     ? `${Repeat<Flag, N>}`
     : `${Repeat<Flag, N>}` | `${Cross<Flag, Decrement[N]>}`;
 
-export type OptionsFlags<
-    Map extends Record<string, string>,
-    N extends number
-> = Cross<KeyOfStr<Map>, N>;
+export type OptionsFlags<Map extends Record<string, string>, N extends number> = Cross<
+    KeyOfStr<Map>,
+    N
+>;
 
-export type OptionsObject<Map extends Record<string, string>> =
-    OptionsObjectInner<ValueOf<Map>>;
+export type OptionsObject<Map extends Record<string, string>> = OptionsObjectInner<ValueOf<Map>>;
 
 export type OptionsType<Map extends Record<string, string>, N extends number> =
     | OptionsObject<Map>

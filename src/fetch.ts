@@ -33,7 +33,7 @@ export const fetch = (url: string, path?: Path | string): Promise<Response> => {
                         url: url,
                         file: filePath,
                         size: contentLength,
-                        message: "Already existed",
+                        message: "Already existed"
                     });
                     response.destroy();
                     return;
@@ -49,7 +49,7 @@ export const fetch = (url: string, path?: Path | string): Promise<Response> => {
                         url,
                         file: filePath,
                         size: contentLength,
-                        message: "Downloaded",
+                        message: "Downloaded"
                     });
                 });
             });

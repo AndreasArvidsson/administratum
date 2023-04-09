@@ -4,7 +4,7 @@ import { OptionsType, getOptions } from "./util/Arguments";
 const optionsMap = {
     a: "all",
     l: "long",
-    ["1"]: "one",
+    ["1"]: "one"
 } as const;
 
 type Options = OptionsType<typeof optionsMap, 3>;
@@ -53,7 +53,7 @@ function getLongLine(path: Path): string {
         stats.gid,
         stats.size,
         formatDate(stats.mtime),
-        path.name,
+        path.name
     ].join(" ");
 }
 
@@ -65,20 +65,7 @@ function formatDate(d: Date) {
     return `${month} ${day} ${hour}:${minute}`;
 }
 
-const months = [
-    "Jan",
-    "Feb",
-    "Mar",
-    "Apr",
-    "May",
-    "Jun",
-    "Jul",
-    "Aug",
-    "Sep",
-    "Oct",
-    "Nov",
-    "Dec",
-];
+const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
 function pad(num: number) {
     return num.toString().padStart(2, "0");

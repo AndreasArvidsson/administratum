@@ -12,13 +12,7 @@ export function createError(params: ErrorParameters): Error {
     const reason = getErrorReason(params);
     const command = ["$", params.file, ...params.args].join(" ");
 
-    const text = [
-        reason,
-        command,
-        params.error?.message,
-        params.stderr,
-        params.stdout,
-    ]
+    const text = [reason, command, params.error?.message, params.stderr, params.stdout]
         .filter(Boolean)
         .join("\n");
 

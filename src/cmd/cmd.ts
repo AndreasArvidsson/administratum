@@ -7,19 +7,17 @@ import {
     EventListenerState,
     OnEventBuilder,
     OnEventCallback,
-    runEventListeners,
+    runEventListeners
 } from "./eventListeners";
 
 function cmdSync(cmd: string, options?: Options): string;
 function cmdSync(file: string, args: string[], options?: Options): string;
-function cmdSync(
-    cmdOrFile: string,
-    optArgs?: string[] | Options,
-    optOptions?: Options
-): string {
+function cmdSync(cmdOrFile: string, optArgs?: string[] | Options, optOptions?: Options): string {
     const { file, args } = parseCommand(cmdOrFile, optArgs);
-    const { shell, cwd, encoding, stdin, stdout, stderr, env, timeout } =
-        parseOptions(optArgs, optOptions);
+    const { shell, cwd, encoding, stdin, stdout, stderr, env, timeout } = parseOptions(
+        optArgs,
+        optOptions
+    );
 
     const stdinStream = stdin === "stdin" ? "inherit" : getStream(stdin);
     const stdoutStream = getStream(stdout);
@@ -31,7 +29,7 @@ function cmdSync(
         env,
         timeout,
         encoding,
-        stdio: [stdinStream, stdoutStream, stderrStream],
+        stdio: [stdinStream, stdoutStream, stderrStream]
     });
 
     if (result.error != null || result.status !== 0 || result.signal != null) {
@@ -42,7 +40,7 @@ function cmdSync(
             exitCode: result.status,
             signal: result.signal,
             stdout: result.stdout,
-            stderr: result.stderr,
+            stderr: result.stderr
         });
     }
 
@@ -50,11 +48,7 @@ function cmdSync(
 }
 
 function cmdAsync(cmd: string, options?: Options): Promise<string>;
-function cmdAsync(
-    file: string,
-    args: string[],
-    options?: Options
-): Promise<string>;
+function cmdAsync(file: string, args: string[], options?: Options): Promise<string>;
 function cmdAsync(
     cmdOrFile: string,
     optArgs?: string[] | Options,
@@ -75,13 +69,8 @@ function cmdAsyncOn(
             return this;
         },
         run: () => {
-            return cmdAsyncInternal(
-                cmdOrFile,
-                optArgs,
-                optOptions,
-                eventListeners
-            );
-        },
+            return cmdAsyncInternal(cmdOrFile, optArgs, optOptions, eventListeners);
+        }
     };
 }
 
@@ -97,14 +86,16 @@ function cmdAsyncInternal(
 ): Promise<string> {
     return new Promise((resolve, reject) => {
         const { file, args } = parseCommand(cmdOrFile, optArgs);
-        const { cwd, encoding, stdin, stdout, stderr, shell, env, timeout } =
-            parseOptions(optArgs, optOptions);
+        const { cwd, encoding, stdin, stdout, stderr, shell, env, timeout } = parseOptions(
+            optArgs,
+            optOptions
+        );
 
         const child = childProcess.spawn(file, args, {
             shell,
             cwd,
             env,
-            timeout,
+            timeout
         });
 
         child.stdout.setEncoding(encoding);
@@ -123,7 +114,7 @@ function cmdAsyncInternal(
             bufferIndex: 0,
             bufferLength: 0,
             kill: () => child.kill(),
-            write: (data: string) => child.stdin.write(data),
+            write: (data: string) => child.stdin.write(data)
         };
 
         if (stdinStream != null) {
@@ -163,7 +154,7 @@ function cmdAsyncInternal(
                         exitCode,
                         signal,
                         stdout: stderrBuffer.join(""),
-                        stderr: stdoutBuffer.join(""),
+                        stderr: stdoutBuffer.join("")
                     })
                 );
             }
@@ -180,7 +171,7 @@ function cmdAsyncInternal(
                     args,
                     error,
                     stderr: stdoutBuffer.join(""),
-                    stdout: stderrBuffer.join(""),
+                    stdout: stderrBuffer.join("")
                 })
             );
         });

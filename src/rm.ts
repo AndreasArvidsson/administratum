@@ -3,7 +3,7 @@ import { Path } from ".";
 import { getOptions, OptionsType } from "./util/Arguments";
 
 const optionsMap = {
-    r: "recursive",
+    r: "recursive"
 } as const;
 
 type Options = OptionsType<typeof optionsMap, 1>;

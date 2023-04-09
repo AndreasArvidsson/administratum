@@ -82,23 +82,23 @@ regAddValue("HKEY_CURRENT_USER\\Software\\MyApp", "enabled", "REG_DWORD", 1);
 
 ```js
 flow("Create folders", (task) => {
-  task("Make applications dir", () => {
-    mkdir("applications");
-  });
+    task("Make applications dir", () => {
+        mkdir("applications");
+    });
 });
 
 flow("Extract archives", (task) => {
-  task("Extract DB", async () => {
-    await extract("mongodb.zip", "applications");
-  });
+    task("Extract DB", async () => {
+        await extract("mongodb.zip", "applications");
+    });
 
-  task("Extract WF", async () => {
-    await extract("wildly.zip", "applications");
-  });
+    task("Extract WF", async () => {
+        await extract("wildly.zip", "applications");
+    });
 
-  task.skip("Skipped", () => {
-    // Skipped
-  });
+    task.skip("Skipped", () => {
+        // Skipped
+    });
 });
 ```
 

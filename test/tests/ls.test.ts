@@ -33,15 +33,11 @@ describe("ls", () => {
 
     it("long", () => {
         const res = ls(dir, { long: true });
-        assert.ok(
-            /[a-z-]{9} \d \d \d \d+ \w{3} \d{2} \d{2}:\d{2} \w+/.test(res)
-        );
+        assert.ok(/[a-z-]{9} \d \d \d \d+ \w{3} \d{2} \d{2}:\d{2} \w+/.test(res));
     });
 
     it("-l", () => {
         const res = ls(dir, "l");
-        assert.ok(
-            /[a-z-]{9} \d \d \d \d+ \w{3} \d{2} \d{2}:\d{2} \w+/.test(res)
-        );
+        assert.ok(/[a-z-]{9} \d \d \d \d+ \w{3} \d{2} \d{2}:\d{2} \w+/.test(res));
     });
 });
