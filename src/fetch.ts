@@ -18,6 +18,15 @@ export const fetch = (url: string, path?: Path | string): Promise<Response> => {
         const filePath = new Path(path ?? url.split("/").at(-1) ?? "file");
 
         const request = lib.get(href, (response) => {
+            if (response.statusCode === 302) {
+                if (response.headers.location) {
+                    fetch(response.headers.location, path).then(resolve).catch(reject);
+                } else {
+                    reject(Error(`Respond code: ${response.statusCode} with no location header`));
+                }
+                return;
+            }
+
             if (response.statusCode !== 200) {
                 reject(Error(`Respond code: ${response.statusCode ?? -1}`));
                 return;
