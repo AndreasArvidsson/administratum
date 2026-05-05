@@ -15,7 +15,7 @@
     "homepage": "https://github.com/AndreasArvidsson/administratum",
     "repository": {
         "type": "git",
-        "url": "https://github.com/AndreasArvidsson/administratum"
+        "url": "git+https://github.com/AndreasArvidsson/administratum.git"
     },
     "bugs": {
         "url": "https://github.com/AndreasArvidsson/administratum/issues"
