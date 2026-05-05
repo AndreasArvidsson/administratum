@@ -81,24 +81,31 @@ regAddValue("HKEY_CURRENT_USER\\Software\\MyApp", "enabled", "REG_DWORD", 1);
 ### Automation pipeline
 
 ```js
-flow("Create folders", (task) => {
-    task("Make applications dir", () => {
-        mkdir("applications");
-    });
-});
+const createFolders = {
+    name: "Create folders",
+    run: ({ task }) => {
+        task("Make applications dir", () => {
+            mkdir("applications");
+        });
+    },
+};
 
-flow("Extract archives", (task) => {
-    task("Extract DB", async () => {
-        await extract("mongodb.zip", "applications");
-    });
+const extractArchives = {
+    name: "Extract archives",
+    run: ({ task }) => {
+        task("Extract DB", async () => {
+            await extract("mongodb.zip", "applications");
+        });
 
-    task("Extract WF", async () => {
-        await extract("wildly.zip", "applications");
-    });
+        task("Extract WF", async () => {
+            await extract("wildly.zip", "applications");
+        });
+    },
+};
 
-    task.skip("Skipped", () => {
-        // Skipped
-    });
+await runFlows({
+    flows: [createFolders, extractArchives],
+    propertiesFile: "setup.properties",
 });
 ```
 

@@ -1,6 +1,6 @@
-import stream from "stream";
-import { getTimeoutMs } from "../cron";
-import { Path } from "../Path";
+import type stream from "node:stream";
+import { getTimeoutMs } from "../cron.js";
+import { Path } from "../Path.js";
 
 type Pipe = "stdin" | "stdout" | "stderr" | "ignore" | stream.Writable;
 
@@ -20,7 +20,10 @@ type ParsedOptions = Required<Options> & {
     timeout: number;
 };
 
-export function parseCommand(cmdOrFile: string, args?: string[] | Options) {
+export function parseCommand(
+    cmdOrFile: string,
+    args?: string[] | Options,
+): { file: string; args: string[] } {
     if (Array.isArray(args)) {
         return { file: cmdOrFile, args };
     }
@@ -28,22 +31,30 @@ export function parseCommand(cmdOrFile: string, args?: string[] | Options) {
     return { file: parts[0], args: parts.slice(1) };
 }
 
-export function parseOptions(optArgs?: string[] | Options, optOptions?: Options): ParsedOptions {
+export function parseOptions(
+    optArgs?: string[] | Options,
+    optOptions?: Options,
+): ParsedOptions {
     const { encoding, cwd, stdin, stdout, stderr, shell, env, timeout } =
-        optArgs != null && !Array.isArray(optArgs) ? optArgs : optOptions ?? {};
+        optArgs != null && !Array.isArray(optArgs)
+            ? optArgs
+            : (optOptions ?? {});
     return {
-        encoding: encoding ?? "utf-8",
+        encoding: encoding ?? "utf8",
         cwd: new Path(cwd ?? Path.cwd()).path,
         stdin: stdin ?? "stdin",
         stdout: stdout ?? "stdout",
         stderr: stderr ?? "stderr",
         shell: shell ?? true,
-        env: Object.assign({}, process.env, env),
-        timeout: timeout ? getTimeoutMs(timeout) : 0
+        env: { ...process.env, ...env },
+        timeout: timeout != null ? getTimeoutMs(timeout) : 0,
     };
 }
 
-export function getStream(pipe: Pipe, stdin?: stream.Writable): stream.Writable | undefined {
+export function getStream(
+    pipe: Pipe,
+    stdin?: stream.Writable,
+): stream.Writable | undefined {
     if (pipe === "stdin") {
         return stdin;
     }

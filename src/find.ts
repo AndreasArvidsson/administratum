@@ -1,14 +1,19 @@
-import { Path } from ".";
-import { getOptions, OptionsType } from "./util/Arguments";
+import { Path } from "./Path.js";
+import type { OptionsType } from "./util/Arguments.js";
+import { getOptions } from "./util/Arguments.js";
 
 const optionsMap = {
     f: "files",
-    d: "directories"
+    d: "directories",
 } as const;
 
 type Options = OptionsType<typeof optionsMap, 2>;
 
-export const find = (path: Path | string, name?: RegExp | null, options: Options = {}): Path[] => {
+export function find(
+    path: Path | string,
+    name?: RegExp | null,
+    options: Options = {},
+): Path[] {
     path = new Path(path);
     const opts = getOptions(options, optionsMap);
 
@@ -16,11 +21,11 @@ export const find = (path: Path | string, name?: RegExp | null, options: Options
         if (opts.directories == null && opts.files == null) {
             return [true, true];
         }
-        return [!!opts.directories, !!opts.files];
+        return [Boolean(opts.directories), Boolean(opts.files)];
     })();
 
     if (!path.exists()) {
-        throw Error(`No such file or directory: '${path.path}'`);
+        throw new Error(`No such file or directory: '${path.path}'`);
     }
 
     function findFile(file: Path): Path[] {
@@ -44,11 +49,15 @@ export const find = (path: Path | string, name?: RegExp | null, options: Options
     }
 
     return findFile(path);
-};
+}
 
-export const findStr = (path: string, name?: RegExp | null, options: Options = {}): string => {
+export function findStr(
+    path: string,
+    name?: RegExp | null,
+    options: Options = {},
+): string {
     const root = Path.cwd();
     return find(path, name, options)
         .map((f) => root.relative(f))
         .join("\n");
-};
+}

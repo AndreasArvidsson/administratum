@@ -3,19 +3,25 @@ interface Options {
     key?: (value: any) => any;
 }
 
-export const min = <T>(values: T[], options: Options = {}): T => {
-    const key = options.key ? options.key : (v: T) => v;
+export function min<T>(values: T[], options: Options = {}): T {
+    const key = options.key ?? ((v: T) => v);
     return minMax(values, (a, b) => key(a) < key(b));
-};
+}
 
-export const max = <T>(values: T[], options: Options = {}): T => {
-    const key = options.key ? options.key : (v: T) => v;
+export function max<T>(values: T[], options: Options = {}): T {
+    const key = options.key ?? ((v: T) => v);
     return minMax(values, (a, b) => key(a) > key(b));
-};
+}
 
-const minMax = <T>(values: T[], isPreferred: (prev: T, curr: T) => boolean): T => {
+function minMax<T>(values: T[], isPreferred: (prev: T, curr: T) => boolean): T {
     if (values.length === 0) {
-        throw Error("No values given");
+        throw new Error("No values given");
     }
-    return values.reduce((prev, curr) => (isPreferred(curr, prev) ? curr : prev), values[0]);
-};
+    let result: T = values[0];
+    for (const value of values.slice(1)) {
+        if (isPreferred(value, result)) {
+            result = value;
+        }
+    }
+    return result;
+}

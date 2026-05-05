@@ -1,74 +1,66 @@
-import { Path, promptContinue, readFile } from ".";
+import type { Path } from "./Path.js";
+import { promptContinue } from "./prompt.js";
+import { readFile } from "./readFile.js";
+
+interface Properties {
+    get: (key: string, def?: string) => string | undefined;
+}
+
+type TaskFn = () => void | Promise<void>;
+
+interface FlowFnProps {
+    task: (name: string, fn: TaskFn) => void;
+    properties: Properties;
+}
+
+export interface Flow {
+    name: string;
+    run: (props: FlowFnProps) => void | Promise<void>;
+}
 
 interface Options {
-    files: Path[] | string[];
+    flows: Flow[];
     propertiesFile?: Path | string;
     skipPrompt?: boolean;
 }
 
-type TaskFn = () => void | Promise<void>;
-type TaskSkipOnlyFunction = (name: string, fn: TaskFn) => void;
-interface Properties {
-    get: (key: string, def?: string) => string;
-}
-
-interface TaskFunction {
-    (name: string, fn: TaskFn): void;
-    only: TaskSkipOnlyFunction;
-    skip: TaskSkipOnlyFunction;
-}
-
-type FlowFn = (task: TaskFunction, properties: Properties) => void | Promise<void>;
-
 interface TaskDesc {
     name: string;
     fn: TaskFn;
-    only?: boolean;
-    skip?: boolean;
 }
 
 interface FlowDesc {
-    name: string;
-    fn: FlowFn;
-    only?: boolean;
-    skip?: boolean;
+    flow: Flow;
     tasks: TaskDesc[];
 }
 
-const flows: FlowDesc[] = [];
-
-const runFlows = async (options: Options): Promise<void> => {
+export async function runFlows(options: Options): Promise<void> {
     const properties = loadProperties(options.propertiesFile);
-    const files = options.files.map((f) => new Path(f));
-    await loadFlowFiles(files);
-    await runFlowFunctions(properties);
-    const hasOnly = flows.some((w) => w.only || w.tasks.some((t) => t.only));
-    logFiles(files);
-    logFlowsAndTasks(hasOnly);
+
+    const flows: FlowDesc[] = options.flows.map((flow) => ({
+        flow,
+        tasks: [],
+    }));
+
+    await runFlowFunctions(flows, properties);
+
+    logFlowsAndTasks(flows);
+
     if (!options.skipPrompt) {
         await promptContinue();
     }
+
     const t1 = Date.now();
-    await runTaskFunctions(hasOnly);
+
+    await runTaskFunctions(flows);
+
     const t2 = Date.now();
     const duration = formatDuration(t1, t2);
     console.log(`\n\n[ All flows completed @ ${duration} ]`);
-};
-
-const flow = (name: string, fn: FlowFn) => {
-    flows.push({ name, fn, tasks: [] });
-};
-
-flow.only = (name: string, fn: FlowFn) => {
-    flows.push({ name, fn, tasks: [], only: true });
-};
-
-flow.skip = (name: string, fn: FlowFn) => {
-    flows.push({ name, fn, tasks: [], skip: true });
-};
+}
 
 function loadProperties(propertiesFile: Path | string | undefined): Properties {
-    const properties: Record<string, string> = {};
+    const properties: Record<string, string | undefined> = {};
     if (propertiesFile != null) {
         const lines = readFile(propertiesFile).split("\n");
         for (const line of lines) {
@@ -77,7 +69,7 @@ function loadProperties(propertiesFile: Path | string | undefined): Properties {
             }
             const parts = line.split("=").map((s) => s.trim());
             if (parts.length !== 2) {
-                throw Error(`Incorrect properties line '${line}'`);
+                throw new Error(`Incorrect properties line '${line}'`);
             }
             properties[parts[0]] = parts[1];
         }
@@ -85,48 +77,36 @@ function loadProperties(propertiesFile: Path | string | undefined): Properties {
     return {
         get(key: string, def?: string) {
             return properties[key] ?? def ?? undefined;
-        }
+        },
     };
 }
 
-async function loadFlowFiles(files: Path[]) {
-    for (const f of files) {
-        await require(f.path);
-    }
-}
-
-async function runFlowFunctions(properties: Properties): Promise<void> {
+async function runFlowFunctions(
+    flows: FlowDesc[],
+    properties: Properties,
+): Promise<void> {
     for (const flow of flows) {
-        const taskFn = getTaskFunction(flow);
-        await Promise.resolve(flow.fn(taskFn, properties));
+        const task = (name: string, fn: TaskFn) => {
+            flow.tasks.push({ name, fn });
+        };
+        await Promise.resolve(flow.flow.run({ task, properties }));
     }
 }
 
-function logFiles(files: Path[]) {
-    console.log(`Files: ${files.length}`);
-    const cwd = Path.cwd();
-    for (const f of files) {
-        console.log(cwd.relative(f));
-    }
-    console.log("");
-}
-
-function logFlowsAndTasks(hasOnly: boolean) {
+function logFlowsAndTasks(flows: FlowDesc[]): void {
     const loglines: string[] = [];
     let runningFlows = 0;
     let runningTasks = 0;
     let numTasks = 0;
 
-    for (const flow of flows) {
-        const runFlow = shouldRun(hasOnly, flow);
-        runningFlows += runFlow ? 1 : 0;
-        loglines.push(`${runFlow ? "  " : "- "}${flow.name}`);
+    for (const { flow, tasks } of flows) {
+        runningFlows++;
+        loglines.push(`  ${flow.name}`);
 
-        for (const task of flow.tasks) {
-            const runTask = shouldRun(hasOnly, flow, task);
+        for (const task of tasks) {
             numTasks++;
-            runningTasks += runTask ? 1 : 0;
-            loglines.push(`    ${runTask ? "  " : "- "}${task.name}`);
+            runningTasks++;
+            loglines.push(`    ${task.name}`);
         }
 
         loglines.push("");
@@ -135,81 +115,40 @@ function logFlowsAndTasks(hasOnly: boolean) {
     console.log(
         runningFlows === flows.length
             ? `Flows: ${runningFlows}`
-            : `Flows: ${runningFlows} / ${flows.length}`
+            : `Flows: ${runningFlows} / ${flows.length}`,
     );
     console.log(
         runningTasks === numTasks
             ? `Tasks: ${runningTasks}`
-            : `Tasks: ${runningTasks} / ${numTasks}`
+            : `Tasks: ${runningTasks} / ${numTasks}`,
     );
     console.log("");
     console.log(loglines.join("\n"));
 }
 
-async function runTaskFunctions(hasOnly: boolean) {
-    let previousFlowRan = false;
-
+async function runTaskFunctions(flows: FlowDesc[]): Promise<void> {
     for (let i = 0; i < flows.length; ++i) {
-        const flow = flows[i];
-
-        if (!shouldRun(hasOnly, flow)) {
-            const prefix = previousFlowRan ? "\n\n" : "";
-            previousFlowRan = false;
-            console.log(`${prefix}========== ${flow.name} [SKIPPED] ==========`);
-            continue;
-        }
-
+        const { flow, tasks } = flows[i];
         const prefix = i > 0 ? "\n\n" : "";
-        previousFlowRan = true;
         console.log(`${prefix}========== ${flow.name} [Start] ==========`);
         const t1 = Date.now();
-        let previousTaskRan = false;
 
-        for (let j = 0; j < flow.tasks.length; ++j) {
-            const task = flow.tasks[j];
-
-            if (!shouldRun(hasOnly, flow, task)) {
-                const prefix = previousTaskRan ? "\n" : "";
-                console.log(`${prefix}* ${task.name} [SKIPPED]`);
-                previousTaskRan = false;
-                continue;
-            }
-
+        for (let j = 0; j < tasks.length; ++j) {
+            const task = tasks[j];
             const prefix = j > 0 ? "\n" : "";
             console.log(`${prefix}* ${task.name}`);
-            previousTaskRan = true;
             await Promise.resolve(task.fn());
         }
 
         const t2 = Date.now();
         const duration = formatDuration(t1, t2);
-        console.log(`========== ${flow.name} [Completed @ ${duration}] ==========`);
+        console.log(
+            `========== ${flow.name} [Completed @ ${duration}] ==========`,
+        );
     }
-}
-
-function getTaskFunction(flow: FlowDesc) {
-    const task = (name: string, fn: TaskFn) => {
-        flow.tasks.push({ name, fn });
-    };
-    task.only = (name: string, fn: TaskFn) => {
-        flow.tasks.push({ name, fn, only: true });
-    };
-    task.skip = (name: string, fn: TaskFn) => {
-        flow.tasks.push({ name, fn, skip: true });
-    };
-    return task;
-}
-
-function shouldRun(hasOnly: boolean, flow: FlowDesc, task?: TaskDesc): boolean {
-    if (!task) {
-        return flow.tasks.some((t) => shouldRun(hasOnly, flow, t));
-    }
-    return !flow.skip && !task.skip && (!hasOnly || !!flow.only || !!task.only);
 }
 
 function formatDuration(t1: number, t2: number): string {
     const delta = t2 - t1;
     return delta < 1000 ? `${delta}ms` : `${delta / 1000}s`;
 }
-
-export { runFlows, flow };

@@ -1,0 +1,11 @@
+{
+    "extends": "../tsconfig.json",
+    "compilerOptions": {
+        "rootDir": "..",
+        "declaration": false,
+        "declarationDir": null,
+        "emitDeclarationOnly": false,
+        "noEmit": true
+    },
+    "include": ["../src/**/*.ts", "runTests.ts", "testUtil.ts", "tests/**/*.ts"]
+}

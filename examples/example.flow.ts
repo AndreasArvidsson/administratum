@@ -1,56 +1,46 @@
-import { flow, sleep } from "../src";
+import type { Flow } from "../src/index.js";
+import { sleep } from "../src/index.js";
 
-flow("Flow 1", async (task, properties) => {
-    await sleep("500ms");
+export const flow1: Flow = {
+    name: "Flow 1",
 
-    console.log(`property: '${properties.get("flow1.value")}'\n`);
-
-    task("task 1:1", async () => {
-        console.log("1:1 start");
+    run: async ({ task, properties }) => {
         await sleep("500ms");
-        console.log("1:1 done");
-    });
 
-    task("task 1:2", async () => {
-        console.log("1:2 start");
+        console.log(`property: '${properties.get("flow1.value")}'\n`);
+
+        task("task 1:1", async () => {
+            console.log("1:1 start");
+            await sleep("500ms");
+            console.log("1:1 done");
+        });
+
+        task("task 1:2", async () => {
+            console.log("1:2 start");
+            await sleep("500ms");
+            console.log("1:2 done");
+        });
+    },
+};
+
+export const flow2: Flow = {
+    name: "Flow 2",
+
+    run: async ({ task, properties }) => {
         await sleep("500ms");
-        console.log("1:2 done");
-    });
 
-    task.skip("task 1:3", async () => {
-        console.log("skipped");
-    });
-});
+        console.log(`property: '${properties.get("flow2.value")}'\n`);
 
-flow.skip("Flow 2", (task) => {
-    task("Task 2:1", () => {
-        console.log("skipped");
-    });
-});
+        task("task 2:1", async () => {
+            console.log("2:1 start");
+            await sleep("500ms");
+            console.log("2:1 done");
+        });
 
-flow("Flow 3", (task) => {
-    task.skip("Task 3:1", () => {
-        console.log("skipped");
-    });
-});
-
-flow("Flow 4", (task) => {
-    task.skip("Task 4:1", () => {
-        console.log("skipped");
-    });
-
-    task.skip("Task 4:2", () => {
-        console.log("skipped");
-    });
-
-    task("Task 4:3", async () => {
-        console.log("4:3 start");
-        await sleep("10ms");
-        console.log("4:3 done");
-    });
-
-    task("Task 4:4", () => {
-        console.log("4:4 start");
-        console.log("4:4 done");
-    });
-});
+        task("task 2:2", async () => {
+            console.log("2:2 start");
+            await sleep("500ms");
+            console.log("2:2 done");
+        });
+    },
+};

@@ -1,18 +1,18 @@
 import fs from "node:fs";
-import { Path } from ".";
+import { Path } from "./Path.js";
 
-export const mkdir = (path: Path | string): Path => {
+export function mkdir(path: Path | string): Path {
     path = new Path(path);
 
     fs.mkdirSync(path.path);
 
     return path;
-};
+}
 
-export const mkdirs = (path: Path | string): Path => {
+export function mkdirs(path: Path | string): Path {
     path = new Path(path);
 
     fs.mkdirSync(path.path, { recursive: true });
 
     return path;
-};
+}

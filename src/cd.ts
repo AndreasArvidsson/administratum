@@ -1,12 +1,12 @@
-import { Path } from ".";
+import { Path } from "./Path.js";
 
-export const cd = (dir?: Path | string): Path => {
+export function cd(dir?: Path | string): Path {
     if (dir == null) {
         dir = Path.home();
     } else if (dir === "-") {
         dir = Path.oldPWD();
         if (dir == null) {
-            throw Error("Old PWD is undefined");
+            throw new Error("Old PWD is undefined");
         }
     } else {
         dir = new Path(dir);
@@ -17,4 +17,4 @@ export const cd = (dir?: Path | string): Path => {
     process.env.OLDPWD = curDir;
 
     return dir;
-};
+}

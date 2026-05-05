@@ -1,5 +1,7 @@
-import assert from "node:assert";
-import { sleep, tempFile, touch } from "../../src";
+import assert from "node:assert/strict";
+import { sleep } from "../../src/cron.js";
+import { tempFile } from "../../src/tempFile.js";
+import { touch } from "../../src/touch.js";
 
 describe("touch", () => {
     it("touch()", async () => {

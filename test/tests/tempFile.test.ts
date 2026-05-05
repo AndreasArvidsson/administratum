@@ -1,6 +1,6 @@
-import assert from "node:assert";
+import assert from "node:assert/strict";
 import fs from "node:fs";
-import { tempFile } from "../../src";
+import { tempFile } from "../../src/tempFile.js";
 
 describe("tempFile", () => {
     it("tempFile()", () => {

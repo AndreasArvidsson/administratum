@@ -1,13 +1,14 @@
 {
     "name": "administratum",
     "displayName": "Administratum",
-    "version": "0.10.0",
+    "version": "0.11.0",
     "description": "All the tools you need to perform your duty to the empire of man",
     "publisher": "AndreasArvidsson",
     "author": "Andreas Arvidsson",
     "license": "MIT",
     "main": "lib/index.js",
     "types": "lib/types/index.d.ts",
+    "type": "module",
     "files": [
         "lib/*"
     ],
@@ -20,35 +21,38 @@
         "url": "https://github.com/AndreasArvidsson/administratum/issues"
     },
     "scripts": {
+        "clean": "rm -rf lib",
         "test": "tsx test/runTests.ts",
         "example": "tsx examples/example.ts",
         "example:flows": "tsx examples/runFlows.ts examples/props.properties",
         "build": "tsc -p . && tsx esbuild.ts",
-        "lint": "eslint src",
-        "prettier": "prettier --write ."
+        "typecheck": "tsc -p .",
+        "lint:ts": "oxlint -c oxlint.config.mts --deny-warnings .",
+        "lint:fmt": "oxfmt --check .",
+        "lint": "npm run typecheck && npm run lint:ts && npm run lint:fmt",
+        "fix": "npm run fix:ts && npm run fix:fmt",
+        "fix:ts": "oxlint -c oxlint.config.mts --fix .",
+        "fix:fmt": "oxfmt ."
+    },
+    "engines": {
+        "node": ">=24"
     },
     "dependencies": {
         "extract-zip": "^2.0.1",
-        "glob": "^9.3.2",
-        "signal-exit": "^3.0.7",
-        "tar": "^6.1.13",
-        "uuid": "^9.0.0"
+        "signal-exit": "^4.1.0",
+        "tar": "^7.5.13",
+        "uuid": "^14.0.0"
     },
     "devDependencies": {
-        "@types/extract-zip": "^2.0.1",
-        "@types/glob": "^8.1.0",
-        "@types/mocha": "^10.0.1",
-        "@types/node": "^18.15.10",
-        "@types/signal-exit": "^3.0.1",
-        "@types/tar": "^6.1.4",
-        "@types/uuid": "^9.0.1",
-        "@typescript-eslint/eslint-plugin": "^5.56.0",
-        "@typescript-eslint/parser": "^5.56.0",
-        "esbuild": "^0.17.14",
-        "eslint": "^8.36.0",
-        "mocha": "^10.2.0",
-        "prettier": "^2.8.7",
-        "tsx": "^3.12.6",
-        "typescript": "^5.0.2"
+        "@types/mocha": "^10.0.10",
+        "@types/node": "^24.12.2",
+        "esbuild": "^0.28.0",
+        "fast-glob": "^3.3.3",
+        "mocha": "^11.7.5",
+        "oxfmt": "^0.47.0",
+        "oxlint-tsgolint": "^0.22.1",
+        "oxlint": "^1.62.0",
+        "tsx": "^4.21.0",
+        "typescript": "^6.0.3"
     }
 }

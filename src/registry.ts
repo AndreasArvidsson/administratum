@@ -1,4 +1,5 @@
-import childProcess, { ExecSyncOptionsWithStringEncoding } from "node:child_process";
+import type { ExecSyncOptionsWithStringEncoding } from "node:child_process";
+import childProcess from "node:child_process";
 
 const dataTypes = [
     "REG_SZ",
@@ -7,14 +8,14 @@ const dataTypes = [
     "REG_DWORD",
     "REG_QWORD",
     "REG_BINARY",
-    "REG_NONE"
+    "REG_NONE",
 ] as const;
 
 const dataTypesPattern = `(${dataTypes.join("|")})`;
 const valueRe = new RegExp(`(\\(?.+\\)?)${dataTypesPattern}\\s*(.*)`);
 
 const options: ExecSyncOptionsWithStringEncoding = {
-    encoding: "utf-8"
+    encoding: "utf8",
 };
 
 type ValueType = (typeof dataTypes)[number];
@@ -31,15 +32,15 @@ interface RegKey {
     children: string[];
 }
 
-export const regQueryKey = (keyName: string): RegKey | undefined => {
+export function regQueryKey(keyName: string): RegKey | undefined {
     let res;
     try {
         res = childProcess.execSync(`REG QUERY "${keyName}"`, options).trim();
-    } catch (e) {
-        if (exceptionIsMissingKeyOrValue(e)) {
+    } catch (error) {
+        if (exceptionIsMissingKeyOrValue(error)) {
             return undefined;
         }
-        throw e;
+        throw error;
     }
 
     // The key exists but it has no value or children
@@ -47,35 +48,43 @@ export const regQueryKey = (keyName: string): RegKey | undefined => {
         return {
             name: keyName,
             values: [],
-            children: []
+            children: [],
         };
     }
 
     const lines = res.split("\n").map((l) => l.trim());
     const separatorIndex = lines.indexOf("");
-    const valueLines = separatorIndex > -1 ? lines.slice(0, separatorIndex) : lines;
-    const childLines = separatorIndex > -1 ? lines.slice(separatorIndex + 1) : [];
+    const valueLines =
+        separatorIndex !== -1 ? lines.slice(0, separatorIndex) : lines;
+    const childLines =
+        separatorIndex !== -1 ? lines.slice(separatorIndex + 1) : [];
 
     return {
         name: keyName,
         values: getValuesFromKeyLines(keyName, valueLines),
-        children: childLines.sort()
+        children: childLines.toSorted(),
     };
-};
+}
 
-export const regHasKey = (keyName: string) => {
+export function regHasKey(keyName: string): boolean {
     return regQueryKey(keyName) != null;
-};
+}
 
-export const regQueryValue = (keyName: string, valueName: string): RegValue | undefined => {
+export function regQueryValue(
+    keyName: string,
+    valueName: string,
+): RegValue | undefined {
     let res;
     try {
-        res = childProcess.execSync(`REG QUERY "${keyName}" /v "${valueName}"`, options);
-    } catch (e) {
-        if (exceptionIsMissingKeyOrValue(e)) {
+        res = childProcess.execSync(
+            `REG QUERY "${keyName}" /v "${valueName}"`,
+            options,
+        );
+    } catch (error) {
+        if (exceptionIsMissingKeyOrValue(error)) {
             return undefined;
         }
-        throw e;
+        throw error;
     }
 
     const lines = res
@@ -85,46 +94,48 @@ export const regQueryValue = (keyName: string, valueName: string): RegValue | un
     const values = getValuesFromKeyLines(keyName, lines);
 
     if (values.length !== 1) {
-        throw Error(`Unexpected registry query return '${res}'`);
+        throw new Error(`Unexpected registry query return '${res}'`);
     }
 
     return values[0];
-};
+}
 
-export const regHasValue = (keyName: string, valueName: string) => {
+export function regHasValue(keyName: string, valueName: string): boolean {
     return regQueryValue(keyName, valueName) != null;
-};
+}
 
-export const regAddKey = (keyName: string) => {
+export function regAddKey(keyName: string): string {
     return childProcess.execSync(`REG ADD "${keyName}"`, options).trim();
-};
+}
 
-export const regAddValue = (
+export function regAddValue(
     keyName: string,
     valueName: string,
     valueType: ValueType,
-    valueData: string
-) => {
+    valueData: string,
+): string {
     return childProcess
         .execSync(
             `REG ADD "${keyName}" /v "${valueName}" /t "${valueType}" /d "${valueData}"`,
-            options
+            options,
         )
         .trim();
-};
+}
 
-export const regDelKey = (keyName: string) => {
+export function regDelKey(keyName: string): string {
     return childProcess.execSync(`REG DELETE "${keyName}" /f`, options).trim();
-};
+}
 
-export const regDelValue = (keyName: string, valueName: string) => {
-    return childProcess.execSync(`REG DELETE "${keyName}" /v "${valueName}" /f`, options).trim();
-};
+export function regDelValue(keyName: string, valueName: string): string {
+    return childProcess
+        .execSync(`REG DELETE "${keyName}" /v "${valueName}" /f`, options)
+        .trim();
+}
 
 function getValuesFromKeyLines(keyName: string, lines: string[]): RegValue[] {
     if (lines[0] !== keyName) {
-        throw Error(
-            `Unexpected registry query key name: expected '${keyName}', actual '${lines[0]}'`
+        throw new Error(
+            `Unexpected registry query key name: expected '${keyName}', actual '${lines[0]}'`,
         );
     }
 
@@ -136,23 +147,26 @@ function getValuesFromKeyLines(keyName: string, lines: string[]): RegValue[] {
             console.log(lines[i]);
             console.log(valueRe);
             console.log(match);
-            throw Error(`Unexpected registry query return '${lines.join("\n")}'`);
+            throw new Error(
+                `Unexpected registry query return '${lines.join("\n")}'`,
+            );
         }
         values.push({
             name: match[1].trim(),
+            // oxlint-disable-next-line typescript/no-unsafe-type-assertion
             type: match[2] as ValueType,
-            data: match[3]
+            data: match[3],
         });
     }
 
-    return values.sort((a, b) => a.name.localeCompare(b.name));
+    return values.toSorted((a, b) => a.name.localeCompare(b.name));
 }
 
-function exceptionIsMissingKeyOrValue(ex: unknown) {
+function exceptionIsMissingKeyOrValue(ex: unknown): boolean {
     return (
         ex instanceof Error &&
         ex.message.includes(
-            "ERROR: The system was unable to find the specified registry key or value."
+            "ERROR: The system was unable to find the specified registry key or value.",
         )
     );
 }

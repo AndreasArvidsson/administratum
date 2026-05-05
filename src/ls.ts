@@ -1,28 +1,30 @@
-import { Path, range } from ".";
-import { OptionsType, getOptions } from "./util/Arguments";
+import { Path } from "./Path.js";
+import { range } from "./range.js";
+import type { OptionsType } from "./util/Arguments.js";
+import { getOptions } from "./util/Arguments.js";
 
 const optionsMap = {
     a: "all",
     l: "long",
-    ["1"]: "one"
+    "1": "one",
 } as const;
 
 type Options = OptionsType<typeof optionsMap, 3>;
 
-export const ls = (path: Path | string, options: Options = {}): string => {
+export function ls(path: Path | string, options: Options = {}): string {
     path = new Path(path);
     const opts = getOptions(options, optionsMap);
 
     if (!path.exists()) {
-        throw Error(`No such file or directory: '${path.path}'`);
+        throw new Error(`No such file or directory: '${path.path}'`);
     }
 
     const result: string[] = [];
 
     // TODO: Proper column spacing
 
-    function addFile(path: Path) {
-        if (!opts.all && path.name[0] === ".") {
+    function addFile(path: Path): void {
+        if (!opts.all && path.name.startsWith(".")) {
             return;
         }
         if (opts.long) {
@@ -33,7 +35,9 @@ export const ls = (path: Path | string, options: Options = {}): string => {
     }
 
     if (path.isDir()) {
-        path.files().forEach(addFile);
+        for (const file of path.files()) {
+            addFile(file);
+        }
     } else {
         addFile(path);
     }
@@ -42,7 +46,7 @@ export const ls = (path: Path | string, options: Options = {}): string => {
     // TODO: total should be size!
     // return options.long ? `total ${result.length}\n${res}` : res;
     return res;
-};
+}
 
 function getLongLine(path: Path): string {
     const stats = path.stats();
@@ -53,11 +57,11 @@ function getLongLine(path: Path): string {
         stats.gid,
         stats.size,
         formatDate(stats.mtime),
-        path.name
+        path.name,
     ].join(" ");
 }
 
-function formatDate(d: Date) {
+function formatDate(d: Date): string {
     const month = months[d.getMonth()];
     const day = pad(d.getDate());
     const hour = pad(d.getHours());
@@ -65,9 +69,22 @@ function formatDate(d: Date) {
     return `${month} ${day} ${hour}:${minute}`;
 }
 
-const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+const months = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+];
 
-function pad(num: number) {
+function pad(num: number): string {
     return num.toString().padStart(2, "0");
 }
 
@@ -76,15 +93,18 @@ function getPermissions(mode: number): string {
     return range(1, 4)
         .map((i) => {
             const val = str.at(-i);
-            return val ? getPermission(val) : "";
+            return val != null ? getPermission(val) : "";
         })
         .join("");
 }
 
 function getPermission(char: string): string {
-    const num = parseInt(char);
+    const num = Number.parseInt(char, 10);
+    // oxlint-disable-next-line no-bitwise
     const r = (num & 4) !== 0;
+    // oxlint-disable-next-line no-bitwise
     const w = (num & 2) !== 0;
+    // oxlint-disable-next-line no-bitwise
     const x = (num & 1) !== 0;
     return `${r ? "r" : ""}${w ? "w" : ""}${x ? "x" : "-"}`;
 }

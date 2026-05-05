@@ -1,10 +1,10 @@
-import assert from "node:assert";
+import assert from "node:assert/strict";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { v4 as uuidv4 } from "uuid";
-import { cp } from "../../src";
-import { fixturesDir } from "../testUtil";
+import { cp } from "../../src/cp.js";
+import { fixturesDir } from "../testUtil.js";
 
 const source = path.join(fixturesDir, "list", "a");
 

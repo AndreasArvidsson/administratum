@@ -1,7 +1,7 @@
-import assert from "node:assert";
+import assert from "node:assert/strict";
 import path from "node:path";
-import { grep, grepStr } from "../../src";
-import { fixturesDir } from "../testUtil";
+import { grep, grepStr } from "../../src/grep.js";
+import { fixturesDir } from "../testUtil.js";
 
 const file = path.join(fixturesDir, "list", "a");
 

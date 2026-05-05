@@ -1,15 +1,15 @@
-import assert from "node:assert";
+import assert from "node:assert/strict";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { v4 as uuidv4 } from "uuid";
-import { extract } from "../../src";
-import { fixturesDir } from "../testUtil";
+import { extract } from "../../src/extract.js";
+import { fixturesDir } from "../testUtil.js";
 
 const dir = path.join(fixturesDir, "extract");
 
 describe("extract", () => {
-    async function testArchive(ext: string) {
+    async function testArchive(ext: string): Promise<void> {
         const source = path.join(dir, `a.${ext}`);
         const destination = path.join(os.tmpdir(), uuidv4());
         const res = await extract(source, destination);

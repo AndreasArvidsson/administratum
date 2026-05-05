@@ -1,5 +1,5 @@
-import assert from "node:assert";
-import { range } from "../../src";
+import assert from "node:assert/strict";
+import { range } from "../../src/range.js";
 
 describe("range", () => {
     it("range(5)", () => {
@@ -17,7 +17,7 @@ describe("range", () => {
     it("range.map", () => {
         assert.deepEqual(
             range(5).map((i) => i),
-            [0, 1, 2, 3, 4]
+            [0, 1, 2, 3, 4],
         );
     });
 });

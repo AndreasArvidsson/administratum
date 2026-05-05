@@ -1,8 +1,8 @@
-import assert from "node:assert";
+import assert from "node:assert/strict";
 import path from "node:path";
-import { $, $$, $on } from "../../src";
-import { Options } from "../../src/cmd/args";
-import { fixturesDir } from "../testUtil";
+import type { Options } from "../../src/cmd/args.js";
+import { $, $$, $on } from "../../src/cmd/cmd.js";
+import { fixturesDir } from "../testUtil.js";
 
 const options: Options = { stdout: "ignore" };
 const optionsOn: Options = { cwd: path.join(fixturesDir, "cmd") };
@@ -17,17 +17,17 @@ describe("cmd", () => {
 
     it("$ sync", () => {
         const res = $("echo hello there", options);
-        assert.ok(/hello there/.test(res));
+        assert.ok(res.includes("hello there"));
     });
 
     it("$$ async", async () => {
         const res = await $$("echo hello there", options);
-        assert.ok(/hello there/.test(res));
+        assert.ok(res.includes("hello there"));
     });
 
     it("$ file args", () => {
         const res = $("echo", ["hello there"], options);
-        assert.ok(/hello there/.test(res));
+        assert.ok(res.includes("hello there"));
     });
 
     it("$$ timeout", async () => {

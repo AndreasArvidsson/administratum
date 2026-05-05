@@ -1,7 +1,7 @@
-import assert from "node:assert";
+import assert from "node:assert/strict";
 import path from "node:path";
-import { ls } from "../../src";
-import { fixturesDir } from "../testUtil";
+import { ls } from "../../src/ls.js";
+import { fixturesDir } from "../testUtil.js";
 
 const dir = path.join(fixturesDir, "list");
 
@@ -33,11 +33,15 @@ describe("ls", () => {
 
     it("long", () => {
         const res = ls(dir, { long: true });
-        assert.ok(/[a-z-]{9} \d \d \d \d+ \w{3} \d{2} \d{2}:\d{2} \w+/.test(res));
+        assert.ok(
+            /[a-z-]{9} \d \d \d \d+ \w{3} \d{2} \d{2}:\d{2} \w+/.test(res),
+        );
     });
 
     it("-l", () => {
         const res = ls(dir, "l");
-        assert.ok(/[a-z-]{9} \d \d \d \d+ \w{3} \d{2} \d{2}:\d{2} \w+/.test(res));
+        assert.ok(
+            /[a-z-]{9} \d \d \d \d+ \w{3} \d{2} \d{2}:\d{2} \w+/.test(res),
+        );
     });
 });

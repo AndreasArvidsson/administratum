@@ -1,12 +1,12 @@
 import fs from "node:fs";
-import { Path } from ".";
+import { Path } from "./Path.js";
 
-export const touch = (path: Path | string): Path => {
+export function touch(path: Path | string): Path {
     path = new Path(path);
 
     if (path.exists()) {
         if (path.isDir()) {
-            throw Error(`Path is a directory: '${path.path}'`);
+            throw new Error(`Path is a directory: '${path.path}'`);
         }
     }
 
@@ -16,4 +16,4 @@ export const touch = (path: Path | string): Path => {
     fs.utimesSync(path.path, now, now);
 
     return path;
-};
+}

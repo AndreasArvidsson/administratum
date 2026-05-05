@@ -7,18 +7,21 @@ type Repeat<S extends string, N extends number> = N extends 0
 type KeyOfStr<T> = Extract<keyof T, string>;
 type ValueOf<T> = T[keyof T];
 
-type OptionsObjectInner<LongName extends string> = Partial<Record<LongName, boolean>>;
+type OptionsObjectInner<LongName extends string> = Partial<
+    Record<LongName, boolean>
+>;
 
 type Cross<Flag extends string, N extends number> = N extends 1
     ? `${Repeat<Flag, N>}`
     : `${Repeat<Flag, N>}` | `${Cross<Flag, Decrement[N]>}`;
 
-export type OptionsFlags<Map extends Record<string, string>, N extends number> = Cross<
-    KeyOfStr<Map>,
-    N
->;
+export type OptionsFlags<
+    Map extends Record<string, string>,
+    N extends number,
+> = Cross<KeyOfStr<Map>, N>;
 
-export type OptionsObject<Map extends Record<string, string>> = OptionsObjectInner<ValueOf<Map>>;
+export type OptionsObject<Map extends Record<string, string>> =
+    OptionsObjectInner<ValueOf<Map>>;
 
 export type OptionsType<Map extends Record<string, string>, N extends number> =
     | OptionsObject<Map>
@@ -26,11 +29,12 @@ export type OptionsType<Map extends Record<string, string>, N extends number> =
 
 export function getOptions<Flag extends string, LongName extends string>(
     options: OptionsObjectInner<LongName> | string,
-    map: { [key in Flag]: LongName }
+    map: Record<Flag, LongName>,
 ): OptionsObjectInner<LongName> {
     if (isString(options)) {
         const res: OptionsObjectInner<LongName> = {};
         for (const f of options) {
+            // oxlint-disable-next-line typescript/no-unsafe-type-assertion
             const key = map[f as Flag];
             res[key] = true;
         }
@@ -40,5 +44,5 @@ export function getOptions<Flag extends string, LongName extends string>(
 }
 
 function isString(data: unknown): data is string {
-    return typeof data === "string" || data instanceof String;
+    return typeof data === "string";
 }

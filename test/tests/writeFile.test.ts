@@ -1,9 +1,9 @@
-import assert from "node:assert";
+import assert from "node:assert/strict";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { v4 as uuidv4 } from "uuid";
-import { writeFile } from "../../src";
+import { writeFile } from "../../src/writeFile.js";
 
 describe("writeFile", () => {
     it("writeFile(string)", () => {

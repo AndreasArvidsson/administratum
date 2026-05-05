@@ -1,18 +1,23 @@
-import { globSync } from "glob";
+import { exit } from "node:process";
+import fastGlob from "fast-glob";
 import Mocha from "mocha";
-import path from "node:path";
+import { testsDir } from "./testUtil.js";
 
 const mocha = new Mocha({
-    color: true
+    color: true,
+    // grep: /exists/,
 });
 
-const cwd = path.join(__dirname, "tests");
-const files = globSync("**/**.test.ts", { cwd }).sort();
+const files = fastGlob
+    .sync("**/**.test.ts", { cwd: testsDir, absolute: true })
+    .toSorted();
 
-files.forEach((f) => mocha.addFile(path.resolve(cwd, f)));
+for (const file of files) {
+    mocha.addFile(file);
+}
 
 mocha.run((failures) => {
     if (failures > 0) {
-        process.exit(1);
+        exit(1);
     }
 });

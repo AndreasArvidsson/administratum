@@ -1,23 +1,26 @@
 import childProcess from "node:child_process";
-import onExit from "signal-exit";
-import { getStream, Options, parseCommand, parseOptions } from "./args";
-import { createError } from "./error";
-import {
+import { onExit } from "signal-exit";
+import type { Options } from "./args.js";
+import { getStream, parseCommand, parseOptions } from "./args.js";
+import { createError } from "./error.js";
+import type {
     EventListener,
     EventListenerState,
     OnEventBuilder,
     OnEventCallback,
-    runEventListeners
-} from "./eventListeners";
+} from "./eventListeners.js";
+import { runEventListeners } from "./eventListeners.js";
 
 function cmdSync(cmd: string, options?: Options): string;
 function cmdSync(file: string, args: string[], options?: Options): string;
-function cmdSync(cmdOrFile: string, optArgs?: string[] | Options, optOptions?: Options): string {
+function cmdSync(
+    cmdOrFile: string,
+    optArgs?: string[] | Options,
+    optOptions?: Options,
+): string {
     const { file, args } = parseCommand(cmdOrFile, optArgs);
-    const { shell, cwd, encoding, stdin, stdout, stderr, env, timeout } = parseOptions(
-        optArgs,
-        optOptions
-    );
+    const { shell, cwd, encoding, stdin, stdout, stderr, env, timeout } =
+        parseOptions(optArgs, optOptions);
 
     const stdinStream = stdin === "stdin" ? "inherit" : getStream(stdin);
     const stdoutStream = getStream(stdout);
@@ -29,7 +32,7 @@ function cmdSync(cmdOrFile: string, optArgs?: string[] | Options, optOptions?: O
         env,
         timeout,
         encoding,
-        stdio: [stdinStream, stdoutStream, stderrStream]
+        stdio: [stdinStream, stdoutStream, stderrStream],
     });
 
     if (result.error != null || result.status !== 0 || result.signal != null) {
@@ -40,7 +43,7 @@ function cmdSync(cmdOrFile: string, optArgs?: string[] | Options, optOptions?: O
             exitCode: result.status,
             signal: result.signal,
             stdout: result.stdout,
-            stderr: result.stderr
+            stderr: result.stderr,
         });
     }
 
@@ -48,11 +51,15 @@ function cmdSync(cmdOrFile: string, optArgs?: string[] | Options, optOptions?: O
 }
 
 function cmdAsync(cmd: string, options?: Options): Promise<string>;
-function cmdAsync(file: string, args: string[], options?: Options): Promise<string>;
+function cmdAsync(
+    file: string,
+    args: string[],
+    options?: Options,
+): Promise<string>;
 function cmdAsync(
     cmdOrFile: string,
     optArgs?: string[] | Options,
-    optOptions?: Options
+    optOptions?: Options,
 ): Promise<string> {
     return cmdAsyncInternal(cmdOrFile, optArgs, optOptions);
 }
@@ -60,17 +67,22 @@ function cmdAsync(
 function cmdAsyncOn(
     cmdOrFile: string,
     optArgs?: string[] | Options,
-    optOptions?: Options
+    optOptions?: Options,
 ): OnEventBuilder {
     const eventListeners: EventListener[] = [];
     return {
-        on: function (regex: RegExp, callback: OnEventCallback) {
+        on(regex: RegExp, callback: OnEventCallback) {
             eventListeners.push({ regex, callback });
             return this;
         },
         run: () => {
-            return cmdAsyncInternal(cmdOrFile, optArgs, optOptions, eventListeners);
-        }
+            return cmdAsyncInternal(
+                cmdOrFile,
+                optArgs,
+                optOptions,
+                eventListeners,
+            );
+        },
     };
 }
 
@@ -82,20 +94,18 @@ function cmdAsyncInternal(
     cmdOrFile: string,
     optArgs?: string[] | Options,
     optOptions?: Options,
-    eventListeners?: EventListener[]
+    eventListeners?: EventListener[],
 ): Promise<string> {
     return new Promise((resolve, reject) => {
         const { file, args } = parseCommand(cmdOrFile, optArgs);
-        const { cwd, encoding, stdin, stdout, stderr, shell, env, timeout } = parseOptions(
-            optArgs,
-            optOptions
-        );
+        const { cwd, encoding, stdin, stdout, stderr, shell, env, timeout } =
+            parseOptions(optArgs, optOptions);
 
         const child = childProcess.spawn(file, args, {
             shell,
             cwd,
             env,
-            timeout
+            timeout,
         });
 
         child.stdout.setEncoding(encoding);
@@ -114,7 +124,7 @@ function cmdAsyncInternal(
             bufferIndex: 0,
             bufferLength: 0,
             kill: () => child.kill(),
-            write: (data: string) => child.stdin.write(data)
+            write: (data: string) => child.stdin.write(data),
         };
 
         if (stdinStream != null) {
@@ -130,7 +140,7 @@ function cmdAsyncInternal(
         child.stdout.on("data", (data: string) => {
             stdoutBuffer.push(data);
 
-            if (eventListenersState.eventListeners.length !== 0) {
+            if (eventListenersState.eventListeners.length > 0) {
                 eventListenersState.bufferLength += data.length;
                 runEventListeners(eventListenersState);
             }
@@ -154,12 +164,12 @@ function cmdAsyncInternal(
                         exitCode,
                         signal,
                         stdout: stderrBuffer.join(""),
-                        stderr: stdoutBuffer.join("")
-                    })
+                        stderr: stdoutBuffer.join(""),
+                    }),
                 );
+            } else {
+                resolve(stdoutBuffer.join("").trimEnd());
             }
-
-            resolve(stdoutBuffer.join("").trimEnd());
         });
 
         child.on("error", (error) => {
@@ -171,8 +181,8 @@ function cmdAsyncInternal(
                     args,
                     error,
                     stderr: stdoutBuffer.join(""),
-                    stdout: stderrBuffer.join("")
-                })
+                    stdout: stderrBuffer.join(""),
+                }),
             );
         });
     });

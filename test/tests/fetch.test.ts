@@ -1,15 +1,15 @@
-import assert from "node:assert";
+import assert from "node:assert/strict";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { v4 as uuidv4 } from "uuid";
-import { fetch } from "../../src";
+import { fetch } from "../../src/fetch.js";
 
 const url =
     "https://raw.githubusercontent.com/AndreasArvidsson/administratum/main/images/Imperio_adeptus_administratum_adepto.webp";
 
 const urlRedirect =
-    "https://github.com/keycloak/keycloak/releases/download/22.0.5/keycloak-22.0.5.zip";
+    "https://httpbin.dev/redirect-to?url=https://httpbin.dev/bytes/16";
 
 describe("fetch()", () => {
     const destination = path.join(os.tmpdir(), uuidv4());
@@ -28,8 +28,7 @@ describe("fetch()", () => {
         assert.ok(res.message.includes("existed"));
     });
 
-    it("fetch redirect", async function () {
-        this.timeout(10000);
+    it("fetch redirect", async () => {
         const destination = path.join(os.tmpdir(), uuidv4());
         const res = await fetch(urlRedirect, destination);
         assert.equal(destination, res.file.path);

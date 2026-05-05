@@ -1,34 +1,37 @@
 import fs from "node:fs";
-import { Path } from ".";
-import { OptionsType, getOptions } from "./util/Arguments";
+import { Path } from "./Path.js";
+import type { OptionsType } from "./util/Arguments.js";
+import { getOptions } from "./util/Arguments.js";
 
 const optionsMap = {
-    f: "force"
+    f: "force",
 } as const;
 
 type Options = OptionsType<typeof optionsMap, 1>;
 
-export const mv = (
+export function mv(
     source: Path | string,
     destination: Path | string,
-    options: Options = {}
-): Path => {
+    options: Options = {},
+): Path {
     source = new Path(source);
     destination = new Path(destination);
     const opts = getOptions(options, optionsMap);
 
     if (source.equals(destination)) {
-        throw Error(`Can't move to self: '${source.path}'`);
+        throw new Error(`Can't move to self: '${source.path}'`);
     }
 
     if (!source.exists()) {
-        throw Error(`No such file or directory: '${source.path}'`);
+        throw new Error(`No such file or directory: '${source.path}'`);
     }
 
     if (destination.exists()) {
         if (destination.isFile()) {
             if (!opts.force) {
-                throw Error(`Destination file already exists: '${destination.path}'`);
+                throw new Error(
+                    `Destination file already exists: '${destination.path}'`,
+                );
             }
         } else {
             destination = destination.join(source.name);
@@ -38,4 +41,4 @@ export const mv = (
     fs.renameSync(source.path, destination.path);
 
     return destination;
-};
+}

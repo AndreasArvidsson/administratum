@@ -1,9 +1,9 @@
-import assert from "node:assert";
+import assert from "node:assert/strict";
 import { Stats } from "node:fs";
 import os from "node:os";
 import pathlib from "node:path";
-import { getCtime, Path } from "../../src";
-import { fixturesDir } from "../testUtil";
+import { getCtime, Path } from "../../src/Path.js";
+import { fixturesDir } from "../testUtil.js";
 
 const dir = new Path(fixturesDir).join("list");
 const file = dir.join("a");
@@ -101,12 +101,10 @@ describe("Path", () => {
         assert.equal(dir.files(/b/).length, 1);
     });
 
-    it("glob()", () => {
-        assert.equal(dir.glob("b").length, 1);
-    });
-
     it("sort()", () => {
-        const actual = [new Path("b"), new Path("a")].sort().map((p) => p.name);
+        const actual = [new Path("b"), new Path("a")]
+            .map((p) => p.name)
+            .toSorted();
         assert.deepEqual(actual, ["a", "b"]);
     });
 

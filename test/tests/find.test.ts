@@ -1,7 +1,7 @@
-import assert from "node:assert";
+import assert from "node:assert/strict";
 import path from "node:path";
-import { find, findStr } from "../../src";
-import { fixturesDir } from "../testUtil";
+import { find, findStr } from "../../src/find.js";
+import { fixturesDir } from "../testUtil.js";
 
 const dir = path.join(fixturesDir, "list");
 const dirName = "list";
@@ -12,7 +12,7 @@ describe("find", () => {
         const res = find(dir);
         assert.deepEqual(
             res.map((f) => f.name),
-            [dirName, ...fileNames]
+            [dirName, ...fileNames],
         );
     });
 
@@ -21,7 +21,7 @@ describe("find", () => {
         const res = findStr(dir);
         const expected = [
             ["fixtures", dirName].join(path.sep),
-            ...fileNames.map((f) => ["fixtures", dirName, f].join(path.sep))
+            ...fileNames.map((f) => ["fixtures", dirName, f].join(path.sep)),
         ].join("\n");
         assert.equal(res, expected);
     });
@@ -30,7 +30,7 @@ describe("find", () => {
         const res = find(dir, /b/);
         assert.deepEqual(
             res.map((f) => f.name),
-            ["b"]
+            ["b"],
         );
     });
 
@@ -38,7 +38,7 @@ describe("find", () => {
         const res = find(dir, null, { files: true });
         assert.deepEqual(
             res.map((f) => f.name),
-            fileNames
+            fileNames,
         );
     });
 
@@ -46,7 +46,7 @@ describe("find", () => {
         const res = find(dir, null, "f");
         assert.deepEqual(
             res.map((f) => f.name),
-            fileNames
+            fileNames,
         );
     });
 
@@ -54,7 +54,7 @@ describe("find", () => {
         const res = find(dir, null, { directories: true });
         assert.deepEqual(
             res.map((f) => f.name),
-            [dirName]
+            [dirName],
         );
     });
 
@@ -62,7 +62,7 @@ describe("find", () => {
         const res = find(dir, null, "d");
         assert.deepEqual(
             res.map((f) => f.name),
-            [dirName]
+            [dirName],
         );
     });
 });

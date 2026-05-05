@@ -1,8 +1,8 @@
-import assert from "node:assert";
+import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
-import { readFile, readFileByline } from "../../src";
-import { fixturesDir } from "../testUtil";
+import { readFile, readFileByline } from "../../src/readFile.js";
+import { fixturesDir } from "../testUtil.js";
 
 describe("readFile", () => {
     it("readFile()", () => {

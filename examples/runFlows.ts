@@ -1,8 +1,9 @@
-import { runFlows, Path } from "../src";
+import type { Flow } from "../src/index.js";
+import { runFlows } from "../src/index.js";
+import { flow1, flow2 } from "./example.flow.js";
 
-(async () => {
-    const files = new Path(__dirname).glob("**/**.flow.ts").sort();
-    const propertiesFile = process.argv[2];
+const propertiesFile = process.argv[2];
 
-    await runFlows({ files, propertiesFile, skipPrompt: false });
-})();
+const flows: Flow[] = [flow1, flow2];
+
+await runFlows({ flows, propertiesFile, skipPrompt: false });

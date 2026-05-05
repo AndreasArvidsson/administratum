@@ -1,5 +1,5 @@
-import assert from "node:assert";
-import { after, countdown, sleep } from "../../src";
+import assert from "node:assert/strict";
+import { after, countdown, sleep } from "../../src/cron.js";
 
 const t = 25;
 const ts = `${t}ms`;

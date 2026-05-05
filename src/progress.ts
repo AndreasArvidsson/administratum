@@ -1,18 +1,19 @@
 import readline from "node:readline";
 
-export const progressPromises = (
+export function progressPromises(
     title: string,
     promises: Promise<unknown>[],
-    format: (index: number, resolved: boolean, response: unknown) => string
-): Promise<unknown> => {
+    format: (index: number, resolved: boolean, response: unknown) => string,
+): Promise<unknown> {
     let first = true;
     let numResolved = 0;
-    const isResolved = new Array<boolean>(promises.length);
-    const responses = new Array<unknown>(promises.length);
-    isResolved.fill(false);
-    responses.fill(null);
+    const isResolved = Array.from({ length: promises.length }, () => false);
+    const responses = Array.from(
+        { length: promises.length },
+        () => null as unknown,
+    );
 
-    function print() {
+    function print(): void {
         if (first) {
             first = false;
         } else {
@@ -47,7 +48,7 @@ export const progressPromises = (
                             resolve(response);
                         })
                         .catch(reject);
-                })
-        )
+                }),
+        ),
     );
-};
+}

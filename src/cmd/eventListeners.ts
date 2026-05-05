@@ -27,13 +27,13 @@ export interface EventListenerState {
     kill: () => void;
 }
 
-export function runEventListeners(state: EventListenerState) {
+export function runEventListeners(state: EventListenerState): void {
     const text = getText(state);
     const toRemove: number[] = [];
     const toAdd: EventListener[] = [];
     let offset = 0;
 
-    state.eventListeners.forEach((listener, i) => {
+    for (const [i, listener] of state.eventListeners.entries()) {
         listener.regex.lastIndex = 0;
         const match = listener.regex.exec(text);
         if (match) {
@@ -46,19 +46,19 @@ export function runEventListeners(state: EventListenerState) {
                 },
                 on: (regex, callback) => {
                     toAdd.push({ regex, callback });
-                }
+                },
             });
             offset = Math.max(offset, match.index + match[0].length);
         }
-    });
+    }
 
-    if (toRemove.length !== 0) {
+    if (toRemove.length > 0) {
         for (let i = toRemove.length - 1; i > -1; --i) {
             state.eventListeners.splice(toRemove[i], 1);
         }
     }
 
-    if (toAdd.length !== 0) {
+    if (toAdd.length > 0) {
         state.eventListeners.push(...toAdd);
     }
 
@@ -81,5 +81,5 @@ function getText(state: EventListenerState): string {
         }
     }
 
-    return parts.reverse().join("");
+    return parts.toReversed().join("");
 }

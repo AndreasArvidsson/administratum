@@ -1,4 +1,4 @@
-import assert from "node:assert";
+import assert from "node:assert/strict";
 import {
     regAddKey,
     regAddValue,
@@ -7,11 +7,10 @@ import {
     regHasKey,
     regHasValue,
     regQueryKey,
-    regQueryValue
-} from "../../src";
+    regQueryValue,
+} from "../../src/registry.js";
 
-const keyName =
-    "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\AdministratumTest";
+const keyName = String.raw`HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\AdministratumTest`;
 const valueName = "value name";
 const dataType = "REG_SZ";
 const data = "some data";
@@ -20,7 +19,7 @@ const expected = "The operation completed successfully.";
 describe("registry", () => {
     it("regQueryKey() ", () => {
         const res = regQueryKey(
-            "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer"
+            String.raw`HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer`,
         );
         assert.ok(res != null);
         assert.ok(res.values.length > 10);
@@ -29,7 +28,7 @@ describe("registry", () => {
 
     it("regQueryKey() no children", () => {
         const res = regQueryKey(
-            "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Feeds"
+            String.raw`HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Feeds`,
         );
         assert.ok(res != null);
         assert.ok(res.values.length > 0);
@@ -37,9 +36,7 @@ describe("registry", () => {
     });
 
     it("regQueryKey() empty", () => {
-        const res = regQueryKey(
-            "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Ext"
-        );
+        const res = regQueryKey(String.raw`HKEY_CURRENT_USER\Uninstall`);
         assert.ok(res != null);
         assert.equal(res.values.length, 0);
         assert.equal(res.children.length, 0);
@@ -74,12 +71,12 @@ describe("registry", () => {
     });
 
     it("regQueryKey() missing", () => {
-        const res = regQueryKey(keyName + "_missing");
+        const res = regQueryKey(`${keyName}_missing`);
         assert.ok(res == null);
     });
 
     it("regQueryValue() missing", () => {
-        const res = regQueryValue(keyName, valueName + "_missing");
+        const res = regQueryValue(keyName, `${valueName}_missing`);
         assert.ok(res == null);
     });
 

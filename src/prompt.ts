@@ -1,13 +1,15 @@
-export const promptContinue = async (): Promise<void> => {
+import { exit } from "node:process";
+
+export async function promptContinue(): Promise<void> {
     const doContinue = await promptYesNo("Do you wish to continue?");
     if (doContinue) {
         console.log("");
     } else {
-        process.exit(0);
+        exit(0);
     }
-};
+}
 
-export const promptYesNo = async (question: string): Promise<boolean> => {
+export async function promptYesNo(question: string): Promise<boolean> {
     for (;;) {
         console.log(`- ${question} [Y/n]`);
         const line = await readLine();
@@ -24,13 +26,13 @@ export const promptYesNo = async (question: string): Promise<boolean> => {
                 console.log("Please answer yes or no");
         }
     }
-};
+}
 
-const readLine = (): Promise<string> => {
+function readLine(): Promise<string> {
     return new Promise<string>((resolve) => {
-        process.stdin.setEncoding("utf-8");
+        process.stdin.setEncoding("utf8");
         process.stdin.once("data", (data) => {
             resolve(data.toString().trim());
         });
     });
-};
+}

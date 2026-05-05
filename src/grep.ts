@@ -1,11 +1,13 @@
-import { Path, readFile } from ".";
-import { getOptions, OptionsFlags, OptionsObject } from "./util/Arguments";
+import { Path } from "./Path.js";
+import { readFile } from "./readFile.js";
+import type { OptionsFlags, OptionsObject } from "./util/Arguments.js";
+import { getOptions } from "./util/Arguments.js";
 
 const optionsMap = {
     n: "lineNumber",
     o: "onlyMatching",
     v: "invertMatch",
-    c: "count"
+    c: "count",
 } as const;
 
 interface OptionsObj extends OptionsObject<typeof optionsMap> {
@@ -14,16 +16,20 @@ interface OptionsObj extends OptionsObject<typeof optionsMap> {
 
 type Options = OptionsObj | OptionsFlags<typeof optionsMap, 4>;
 
-export const grep = (regex: RegExp, file: Path | string, options: Options = {}): string[] => {
+export function grep(
+    regex: RegExp,
+    file: Path | string,
+    options: Options = {},
+): string[] {
     file = new Path(file);
     const opts = getOptions(options, optionsMap) as OptionsObj;
 
     if (!file.exists()) {
-        throw Error(`No such file : '${file.path}'`);
+        throw new Error(`No such file : '${file.path}'`);
     }
 
     if (file.isDir()) {
-        throw Error(`File is a directory: '${file.path}'`);
+        throw new Error(`File is a directory: '${file.path}'`);
     }
 
     const lines = readFile(file).split("\n");
@@ -70,8 +76,12 @@ export const grep = (regex: RegExp, file: Path | string, options: Options = {}):
     }
 
     return result;
-};
+}
 
-export const grepStr = (regex: RegExp, file: Path | string, options: Options = {}): string => {
+export function grepStr(
+    regex: RegExp,
+    file: Path | string,
+    options: Options = {},
+): string {
     return grep(regex, file, options).join("\n");
-};
+}

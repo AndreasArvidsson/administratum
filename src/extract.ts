@@ -1,6 +1,7 @@
 import extractZip from "extract-zip";
-import tar from "tar";
-import { mkdirs, Path } from ".";
+import { extract as tarExtract } from "tar";
+import { mkdirs } from "./mkdir.js";
+import { Path } from "./Path.js";
 
 interface Options {
     force?: boolean;
@@ -12,27 +13,29 @@ function unzip(source: Path, destination: Path): Promise<void> {
 
 function untar(source: Path, destination: Path): Promise<void> {
     mkdirs(destination);
-    return tar.extract({
+    return tarExtract({
         file: source.path,
-        cwd: destination.path
+        cwd: destination.path,
     });
 }
 
-export const extract = async (
+export async function extract(
     source: Path | string,
     destination?: Path | string,
-    options: Options = {}
-): Promise<Path> => {
+    options: Options = {},
+): Promise<Path> {
     source = new Path(source);
     destination = new Path(destination ?? source.name);
 
-    if (!source.exists) {
-        throw Error(`No such file: '${source.path}'`);
+    if (!source.exists()) {
+        throw new Error(`No such file: '${source.path}'`);
     }
 
     if (destination.exists()) {
         if (destination.isFile() && !options.force) {
-            throw Error(`Destination file already exists: '${destination.path}'`);
+            throw new Error(
+                `Destination file already exists: '${destination.path}'`,
+            );
         }
     }
 
@@ -53,4 +56,4 @@ export const extract = async (
     }
 
     return destination;
-};
+}

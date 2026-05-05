@@ -4,10 +4,7 @@ interface RangeIterator {
     [Symbol.iterator]: () => RangeIterator;
 }
 
-function range(stop: number): RangeIterator;
-function range(start: number, stop: number): RangeIterator;
-function range(start: number, stop: number, step: number): RangeIterator;
-function range(a: number, b?: number, step = 1): RangeIterator {
+export function range(a: number, b?: number, step = 1): RangeIterator {
     let start: number, stop: number;
     if (b != null) {
         start = a;
@@ -38,8 +35,6 @@ function range(a: number, b?: number, step = 1): RangeIterator {
 
         [Symbol.iterator]() {
             return this;
-        }
+        },
     };
 }
-
-export { range };
